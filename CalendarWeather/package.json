@@ -11,8 +11,11 @@
     },
     "dependencies": {
         "@mobiscroll/react": "https://npm.mobiscroll.com/@mobiscroll/react-trial/-/react-trial-4.10.2.tgz",
+        "moment": "^2.24.0",
         "react": "16.9.0",
         "react-native": "0.61.5",
+        "react-native-add-calendar-event": "^3.0.0",
+        "react-native-calendar-events": "^1.7.3",
         "react-native-calendars": "^1.260.0",
         "react-native-events-calendar": "^1.0.8"
     },
