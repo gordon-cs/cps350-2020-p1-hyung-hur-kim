@@ -1,81 +1,68 @@
+import RNCalendarEvents from "react-native-calendar-events";
 
-/*This is an Example of Calendar With Events*/
-import React from 'react';
-//import react in our project
-import { Dimensions, View } from 'react-native';
-//import basic react native components
-import EventCalendar from 'react-native-events-calendar';
-//import EventCalendar component
-let { width } = Dimensions.get('window');
+import React, { Component } from "react";
+import { Text, View, Button, Alert } from "react-native";
 
-export default class Event extends React.Component {
-	constructor(props) {
-		super(props);
-		//Dummy event data to list in calendar 
-		//You can also get the data array from the API call
-		this.state = {
-			events: [
-			  {
-				start: '2019-01-01 00:00:00',
-				end: '2019-01-01 02:00:00',
-				title: 'New Year Party',
-				summary: 'xyz Location',
-			  },{
-				start: '2019-01-01 01:00:00',
-				end: '2019-01-01 02:00:00',
-				title: 'New Year Wishes',
-				summary: 'Call to every one',
-			  },
-			  {
-				start: '2020-02-06 00:30:00',
-				end: '2019-02-06 01:30:00',
-				title: 'Parag Birthday Party',
-				summary: 'Call him',
-			  },
-			  {
-				start: '2019-01-03 01:30:00',
-				end: '2019-01-03 02:20:00',
-				title: 'My Birthday Party',
-				summary: 'Lets Enjoy',
-			  },
-			  {
-				start: '2019-02-04 04:10:00',
-				end: '2019-02-04 04:40:00',
-				title: 'Engg Expo 2019',
-				summary: 'Expoo Vanue not confirm',
-			  },
-			],
-		  };
-	  }
-	  eventClicked(event) {
-		//On Click oC a event showing alert from here
-		alert(JSON.stringify(event));
-	  }
+export default class Event extends Component {
+  _getCalendarStatus = async () => {
+    try {
+      let calendarAuthStatus = await RNCalendarEvents.authorizationStatus();
+      Alert.alert("Calendar Status", calendarAuthStatus, ["OK"]);
+    } catch (error) {
+      Alert.alert("Failed to get Calendar Status");
+    }
+  };
 
-	  componentDidMount() {
-		//RNCalendarEvents.fetchAllEvents('2020-02-04 00:00:00', '2020-03-01 00:00:00', allCalendars);
-	  }
+  _requestCalendarPermissions = async () => {
+    try {
+      let requestCalendarPermission = await RNCalendarEvents.authorizeEventStore();
+      Alert.alert("Calendar Permission", requestCalendarPermission, ["OK"]);
+    } catch (error) {
+      Alert.alert("Failed to ask permission");
+    }
+  };
 
+  _getCalendars = async () => {
+    try {
+      let availableCalendars = await RNCalendarEvents.findCalendars();
+      Alert.alert("Available Calendars", JSON.stringify(availableCalendars), [
+        "OK"
+      ]);
+    } catch (error) {
+      Alert.alert("Failed to ask permission");
+    }
+  };
 
-	 
-	  render() {
-		
-		return (
-			<EventCalendar
-          eventTapped={this.eventClicked.bind(this)}
-          //Function on event press
-          events={this.state.events}
-          //passing the Array of event
-          width={width}
-          //Container width
-          size={60}
-          //number of date will render before and after initDate 
-          //(default is 30 will render 30 day before initDate and 29 day after initDate)
-          initDate={this.props.currentDate}
-          //show initial date (default is today)
-          scrollToFirst
-		  //scroll to first event of the day (default true)
-        /> 
-		);
-	  }
-	}
+  _fetchAllEvents = async () => {
+    try {
+      let allEvents = await RNCalendarEvents.fetchAllEvents(
+        "2019-01-19T19:26:00.000Z",
+        "2019-02-19T19:26:00.000Z"
+      );
+      console.log(allEvents);
+      Alert.alert("Available Events", JSON.stringify(allEvents));
+    } catch (error) {
+      Alert.alert("Failed to get events");
+    }
+  };
+
+  render() {
+    return (
+      <View>
+        <Button
+          title={"Get Calendar Status"}
+          onPress={this._getCalendarStatus}
+        />
+        <Button
+          title={"Request Calendar Permission"}
+          onPress={this._requestCalendarPermissions}
+        />
+        <Button
+          title={"Get Available Calendars"}
+          onPress={this._getCalendars}
+        />
+        <Button title={"Fetch All Events"} onPress={this._fetchAllEvents} />
+      </View>
+    );
+  }
+}

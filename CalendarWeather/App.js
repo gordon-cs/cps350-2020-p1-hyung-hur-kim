@@ -7,6 +7,7 @@ import {View } from 'react-native';
 
 import CalendarView from './src/CalendarView';
 import Event from './src/Event';
+import WeatherData from './src/WeatherApi';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,8 @@ export default class App extends React.Component {
     currentDate = new Date();
 
     return (
-      <View style={{ flex: 1, marginTop: 20 }}>
+      <View>
+        <WeatherData></WeatherData>
         <CalendarView currentDate={currentDate}/>
         <Event currentDate = {currentDate}/>
       </View>
