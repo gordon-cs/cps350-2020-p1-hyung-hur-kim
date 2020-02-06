@@ -20,13 +20,10 @@ export default class CalendarView extends Component {
 
   	render() {
       return (
-        <View>
+        <View >
           <Calendar
             current = {this.props.currentDate}
           />
-          <Event>
-            location = {this.props.currentDate}
-          </Event>
         </View>
       )
   }
