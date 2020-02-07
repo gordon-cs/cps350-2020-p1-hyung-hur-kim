@@ -6,8 +6,8 @@ import React from 'react';
 import {View } from 'react-native';
 
 import CalendarView from './src/CalendarView';
-import Event from './src/Event';
 import WeatherData from './src/WeatherApi';
+import Event from './src/Event';
 
 export default class App extends React.Component {
   constructor(props) {

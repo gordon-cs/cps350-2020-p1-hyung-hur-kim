@@ -17,19 +17,6 @@ export default class CalendarView extends Component {
     }
 
   	render() {
-      let icons = [icon, icon, icon];
-      let markedDates = [
-        {
-            date: new Date(),
-            dots: [
-                {
-                  key: 1,
-                  color: 'black',
-                  selectedDotColor: 'black',
-                },
-            ],
-        },
-      ];
       
       return (
         <View>
@@ -49,7 +36,6 @@ export default class CalendarView extends Component {
 				      highlightDateNumberStyle={{ color: 'red' }}
 				      highlightDateNameStyle={{ color: 'red' }}
               iconContainer={{ flex: 0.1 }}
-              markedDates = {markedDates}
 			    />
           
         </View>
