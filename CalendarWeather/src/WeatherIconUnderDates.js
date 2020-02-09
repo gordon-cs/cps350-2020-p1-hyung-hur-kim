@@ -31,6 +31,7 @@ export default class WeatherIconUnderDates extends React.Component {
               />
             </View>
           )}
+          keyExtractor={(item, index) => index.toString()}
         />
       </SafeAreaView>
     );
