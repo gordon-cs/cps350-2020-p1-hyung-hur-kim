@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-} from 'react-native';
-
+import { Text, View, Button, Alert, Image, FlatList, StyleSheet} from "react-native";
 import CalendarStrip from 'react-native-calendar-strip';
 
 /* WeatherNow component gives an overall summary of today's weather
@@ -13,11 +9,18 @@ import CalendarStrip from 'react-native-calendar-strip';
 export default class CalendarView extends Component {
     constructor(props)
     {
-      super(props);
-    }
+	  super(props);
+	}
 
   	render() {
-      
+		let image1 = require('./cloud.png');
+		let image2 = require('./cloud.png');
+		let image3 = require('./cloud.png');
+		let image4 = require('./cloud.png');
+		let image5 = require('./cloud.png');
+		let image6 = require('./cloud.png');
+		let image7 = require('./cloud.png');
+		let images = [{"source": image1}, image2, image3, image4, image5, image6, image7];
       return (
         <View>
           <CalendarStrip
@@ -36,8 +39,9 @@ export default class CalendarView extends Component {
 				      highlightDateNumberStyle={{ color: 'red' }}
 				      highlightDateNameStyle={{ color: 'red' }}
               iconContainer={{ flex: 0.1 }}
+              useIsoWeekday = {false}
+              startingDate = {this.props.currentDate}
 			    />
-          
         </View>
       )
   }

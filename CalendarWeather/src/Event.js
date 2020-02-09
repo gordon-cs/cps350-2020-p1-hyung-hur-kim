@@ -49,19 +49,6 @@ export default class Event extends Component {
   render() {
     return (
       <View>
-        <Button
-          title={"Get Calendar Status"}
-          onPress={this._getCalendarStatus}
-        />
-        <Button
-          title={"Request Calendar Permission"}
-          onPress={this._requestCalendarPermissions}
-        />
-        <Button
-          title={"Get Available Calendars"}
-          onPress={this._getCalendars}
-        />
-        <Button title={"Fetch All Events"} onPress={this._fetchAllEvents} />
       </View>
     );
   }
