@@ -1,19 +1,27 @@
 //This is an example code for FlatList// 
 import React from 'react';
 //import react in our code. 
-import { StyleSheet, FlatList, Text, View, Alert, Button} from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, Dimensions} from 'react-native';
 //import all the components we are going to use. 
 import RNCalendarEvents from "react-native-calendar-events";
+import EventCalendar from 'react-native-events-calendar';
+import moment from "moment";
 
+let { width } = Dimensions.get('window');
+var date = new Date();
+var offsetInHours = date.getTimezoneOffset() / 60;
+
+let calendars = [];
 RNCalendarEvents.authorizationStatus().then(response => {
   if(response !== "authorized")
   {
     RNCalendarEvents.authorizeEventStore();
+    calendars = RNCalendarEvents.findCalendars();
   }
 });
   
  
-export default class DisplayWeather extends React.Component {
+export default class EventPicker extends React.Component {
 
   
   constructor(props) {
@@ -35,18 +43,39 @@ export default class DisplayWeather extends React.Component {
          { id: '22', value: '3 AM' , event: "" },{ id: '23', value: '4 AM' , event: "" },
          { id: '24', value: '5 AM' , event: "" },],
       allCalendars: [],
-      currentDate: this.props.currentDate,
+      currentDate: '2/12/2020',
       allEvents: [],
+      events: [
+        {
+          start: '2020-02-14 01:30:00',
+          
+          title: 'Mine',
+          end: '2020-02-14 02:30:00',
+          summary: '3412 Piedmont Rd NE, GA 3032',
+          color: 'green',
+        },
+        {
+          start: '2020-02-14 22:30:00',
+          end: '2020-02-14 23:30:00',
+          title: 'Dr. Mariana Joseph',
+          summary: '3412 Piedmont Rd NE, GA 3032',
+        },
+      ],
+      allCalendars: calendars,
+
     };
   }
 
-  componentDidMount() {
-    this.getCalendars();
-    this.fetchAllEvents();
+  _eventTapped(event) {
+    alert(JSON.stringify(event));
   }
 
-  
 
+componentDidMount() {
+    this.getCalendars();
+    this.fetchAllEvents();
+    
+  }
   getCalendars = async () => {
     try {
       let availableCalendars = await RNCalendarEvents.findCalendars();
@@ -55,116 +84,62 @@ export default class DisplayWeather extends React.Component {
       Alert.alert("Failed to ask permission");
     }
   };
+  
 
   fetchAllEvents = async () => {
+    let allEvents = {};
     try {
-      let sortedEvents = [];
-      let allEvents = await RNCalendarEvents.fetchAllEvents(
-        "2019-01-19T19:26:00.000Z",
-        "2019-02-19T19:26:00.000Z"
+      allEvents = await RNCalendarEvents.fetchAllEvents(
+        "2020-02-11T00:00:00.000Z",
+        "2020-02-15T00:00:00.000Z",
       );
-      Alert.alert("Available Events", JSON.stringify(allEvents));
-      for(let i=0; i< allEvents.length; i++)
-      {
-        sortedEvents[i] = {'startDate': allEvents[i].startDate, 'endDate': allEvents[i].endDate, 
-                          'title': allEvents[i].title, 'color': allEvents[i].color,
-                          'location': allEvents[i].location, 'allDay': allEvents[i].allDay
-        };
-      }
-      this.setState({allEvents: JSON.stringify(sortedEvents)});
     } catch (error) {
       Alert.alert("Failed to get events");
     }
-  };
+    let sortedEvents = [allEvents.length];
 
-  setEvent() {
-    let allEvents = this.state.allEvents;
-    let tempList = this.state.FlatListItems;
-    for(let i=0; i<allEvents.length; i++)
-    {
-      if(allEvents[i].allDay)
+      for(let i=0; i< allEvents.length; i++)
       {
+        const startDate = moment(allEvents[i].startDate, ["YYYY-MM-DD[T]HH:mm:ss"]).format("YYYY-MM-DD HH:mm:ss");
+        const endDate = moment(allEvents[i].endDate, ["YYYY-MM-DD[T]HH:mm:ss"]).format("YYYY-MM-DD HH:mm:ss");
+        //console.log((allEvents[i].startDate.replace('T', " ").split("."))[0]);
+        //console.log((allEvents[i].endDate.replace('T', " ").split("."))[0]);c
+        console.log(allEvents[i].title);
+        console.log(startDate);
+        sortedEvents[i] ={'start': startDate, 
+                          'end': endDate, 
+                          'title': allEvents[i].title, 'summary': allEvents[i].location,
+                          'color': allEvents[i].color};
         
       }
-    }
-  }
-
-  
-  FlatListItemSeparator = () => {
-    return (
-      //Item Separator
-      <View style={{height: 1, width: '100%', backgroundColor: '#C8C8C8'}}/>
-    );
+        this.setState({allEvents: sortedEvents});
   };
-  GetItem(item) {
-    //Function for click on an item
-    Alert.alert(item);
-  }
 
-  render() {
+  render() 
+  
+  {
     return (
-      <FlatList
-          data={this.state.FlatListItems}
-          //data defined in constructor
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-          //Item Separator View
-          renderItem={({ item}) => 
-          (
-            // Single Comes here which will be repeatative for the FlatListItems
-            <View style = {styles.container}>
-              <View style = {styles.list}>
-                <Text
-                  style={styles.item}
-                  onPress={this.GetItem.bind(this, 'Id : '+item.id+' Value : '+item.value)}>
-                  {item.value}
-                </Text>
-                <Text style={styles.event}>
-                  {item.event}
-                </Text>
-              </View>
-            </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
+      <View style={{ flex: 1 }}>
+        <EventCalendar
+          eventTapped={this._eventTapped.bind(this)}
+          events={this.state.allEvents}
+          width={width}
+          initDate={'2020-02-12'}
+          scrollToFirst
+          upperCaseHeader
+          scrollToFirst={true}
+          styles= {{
+            header: {
+              
+            },
+            line: {
+              backgroundColor: 'grey',
+              opacity: 0.3
+            },
+        }}
+          
         />
-        
+      </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ecf0f1',
-    padding: 8,
-  },
-  MainContainer: {
-    justifyContent: 'center',
-    flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    marginTop: 30,
-  },
-
-
-  list: {
-    flexDirection: 'row',
-    
-  },
- 
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-
-  event: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-    marginLeft: 'auto'
-    
-    
-
-  }
-});
