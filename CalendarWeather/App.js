@@ -20,7 +20,6 @@ export default class App extends React.Component {
       <View style={{ flex: 1}}>
         <WeatherNow></WeatherNow>
         <CalendarView currentDate={currentDate}/>
-        <EventPicker currentDate = {currentDate}></EventPicker>
       </View>
 
     );
