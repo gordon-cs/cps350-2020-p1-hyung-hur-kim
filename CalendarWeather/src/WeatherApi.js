@@ -45,6 +45,9 @@ export default class WeatherNow extends Component {
 					<Text style={styles.curTemp}>
 						{temp}
 					</Text>
+					<Text style={styles.feelsLike}>
+						Feels like {feelsLike + " \u2109"}
+					</Text>
 					<Text style={styles.summary}>
 						{this.props.weatherData.currently.summary}
 					</Text>
@@ -55,9 +58,6 @@ export default class WeatherNow extends Component {
 							Today
 						</Text>
 						<Text style={styles.tempHighLow}>{todayRange}</Text>
-						<Text>
-							Feels like {feelsLike + " \u2109"}
-						</Text>
 					</View>
 					<View style={styles.box2_2}>
 						<Text>Sunrise            Sunset</Text>
@@ -119,10 +119,13 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		},
 	summary: {
-		fontSize: 25,
+		fontSize: 20,
 		alignSelf: 'center',
 	},
 	tempHighLow: {
 		fontSize: 30,
 	},
+	feelsLike: {
+		alignSelf: 'center',
+	}
 });
