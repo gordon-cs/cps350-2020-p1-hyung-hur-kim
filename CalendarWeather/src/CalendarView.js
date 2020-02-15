@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button, Alert, Image, FlatList, StyleSheet} from "react-native";
 import CalendarStrip from 'react-native-calendar-strip';
+import EventPicker from './EventPicker'
 
 /* WeatherNow component gives an overall summary of today's weather
  * at a given location, with a small preview of the next day. All its
@@ -10,19 +11,15 @@ export default class CalendarView extends Component {
     constructor(props)
     {
 	  super(props);
+	  this.state = {
+		  currentSelectedDate: new Date(this.props.currentDate),
+		  currentDate: this.props.currentDate
+	  }
 	}
 
   	render() {
-		let image1 = require('./cloud.png');
-		let image2 = require('./cloud.png');
-		let image3 = require('./cloud.png');
-		let image4 = require('./cloud.png');
-		let image5 = require('./cloud.png');
-		let image6 = require('./cloud.png');
-		let image7 = require('./cloud.png');
-		let images = [{"source": image1}, image2, image3, image4, image5, image6, image7];
       return (
-        <View>
+        <View style={{ flex: 1}}>
           <CalendarStrip
 				      calendarAnimation={{ type: 'sequence', duration: 30 }}
 				      daySelectionAnimation={{
@@ -40,8 +37,10 @@ export default class CalendarView extends Component {
 				      highlightDateNameStyle={{ color: 'red' }}
               iconContainer={{ flex: 0.1 }}
               useIsoWeekday = {false}
-              startingDate = {this.props.currentDate}
+			  startingDate = {this.state.currentDate}
+			  onDateSelected = {(newDate) => this.setState({currentSelectedDate: new Date(newDate)})}
 			    />
+			<EventPicker currentDate = {this.state.currentSelectedDate}></EventPicker>
         </View>
       )
   }

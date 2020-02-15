@@ -18,12 +18,10 @@ export default class App extends React.Component {
     currentDate = new Date();
   
     return (
-      <View>
+      <View style={{ flex: 1}}>
         <WeatherNow></WeatherNow>
         <CalendarView currentDate={currentDate}/>
-        <Event currentDate = {currentDate}/>
         <WeatherIconUnderDates></WeatherIconUnderDates>
-        <EventPicker></EventPicker>
       </View>
 
     );
