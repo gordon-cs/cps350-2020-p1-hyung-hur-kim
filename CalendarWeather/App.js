@@ -8,6 +8,7 @@ import CalendarView from './src/CalendarView';
 import WeatherNow from './src/WeatherNow';
 import Event from './src/Event';
 import EventPicker from './src/EventPicker';
+import WeatherIconUnderDates from './src/WeatherIconUnderDates';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -20,6 +21,7 @@ export default class App extends React.Component {
       <View style={{ flex: 1}}>
         <WeatherNow></WeatherNow>
         <CalendarView currentDate={currentDate}/>
+        <WeatherIconUnderDates></WeatherIconUnderDates>
       </View>
 
     );
