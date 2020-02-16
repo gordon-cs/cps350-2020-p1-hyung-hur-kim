@@ -21,7 +21,7 @@ export default class App extends React.Component {
       <View style={{ flex: 1}}>
         <WeatherNow></WeatherNow>
         <CalendarView currentDate={currentDate}/>
-        <WeatherIconUnderDates></WeatherIconUnderDates>
+        
       </View>
 
     );
