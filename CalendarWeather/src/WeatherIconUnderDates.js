@@ -6,11 +6,11 @@ export default class WeatherIconUnderDates extends React.Component {
     super(props);
     this.state = {
       WeatherIcons: [
-        {image:require('./sunny.png')},
+        {image:require('./clear-day.png')},
         {image:require('./cloudy.png')},
-        {image:require('./sunny.png')},
-        {image:require('./sunny.png')},
-        {image:require('./sunny.png')},
+        {image:require('./clear-day.png')},
+        {image:require('./clear-day.png')},
+        {image:require('./clear-day.png')},
         {image:require('./rainy.png')},
         {image:require('./rainy.png')},]
       };
