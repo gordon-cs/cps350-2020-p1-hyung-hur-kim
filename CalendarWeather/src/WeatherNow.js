@@ -56,6 +56,7 @@ class WeatherData extends Component {
         weatherData: responseJson,
         tempScale: tempScale,
       });
+      
     } catch (error) {
       console.error(error);
     }
