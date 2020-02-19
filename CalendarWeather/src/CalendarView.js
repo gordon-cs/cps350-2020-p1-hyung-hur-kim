@@ -3,6 +3,7 @@ import { Text, View, Button, Alert, Image, FlatList, StyleSheet} from "react-nat
 import CalendarStrip from 'react-native-calendar-strip';
 import EventPicker from './EventPicker'
 import WeatherIconUnderDates from './WeatherIconUnderDates'
+import WeatherNow from './WeatherNow';
 
 /* WeatherNow component gives an overall summary of today's weather
  * at a given location, with a small preview of the next day. All its
@@ -15,22 +16,16 @@ export default class CalendarView extends Component {
     {
 	  super(props);
 	  this.state = {
-		  currentSelectedDate: new Date(this.props.currentDate),
-		  currentDate: this.props.currentDate
+		  currentSelectedDate: new Date(),
+		  currentDate: new Date()
 	  }
 	}
-	UNSAFE_componentWillReceiveProps(nextProps) {
-		// Any time props.email changes, update state.
-		if (nextProps.currentDate !== this.props.currentDate)
-		  this.setState({
-			currentDate: new Date(nextProps.currentDate)
-		  });
-		}
 
   	render() {
       return (
         <View style={{ flex: 1}}>
-          <CalendarStrip
+		<WeatherNow currentDate = {this.state.currentSelectedDate}></WeatherNow>
+        <CalendarStrip
 				      daySelectionAnimation={{
 			        		type: 'border',
 			        		duration: 200,
@@ -49,7 +44,7 @@ export default class CalendarView extends Component {
 			  startingDate = {this.state.currentDate}
 			  onDateSelected = {(newDate) => this.setState({currentSelectedDate: new Date(newDate)})}
 			    />
-				<WeatherIconUnderDates></WeatherIconUnderDates>
+			<WeatherIconUnderDates currentDate = {this.state.currentDate}></WeatherIconUnderDates>
 			<EventPicker currentDate = {this.state.currentSelectedDate}></EventPicker>
         </View>
       )

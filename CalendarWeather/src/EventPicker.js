@@ -1,10 +1,10 @@
 //This is an example code for FlatList// 
 import React from 'react';
 //import react in our code. 
-import { StyleSheet, FlatList, Text, View, Alert, Dimensions, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, Dimensions, Image, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 //import all the components we are going to use. 
 import RNCalendarEvents from "react-native-calendar-events";
-import EventCalendar from 'react-native-events-calendar';
+import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import moment from "moment";
 
 let { width } = Dimensions.get('window');
@@ -17,7 +17,7 @@ RNCalendarEvents.authorizationStatus().then(response => {
 });
 
 let sunny = require('./clear-day.png');
-let rainy = require('./rainy.png');
+let rainy = require('./rain.png');
 let cloudy = require('./cloudy.png');
 let partlyCloudyDay = require('./partly-cloudy-day.png');
 let snow = require('./snow.png');
@@ -32,6 +32,7 @@ export default class EventPicker extends React.Component {
     super(props);
     
     this.fetchAllEvents = this.fetchAllEvents.bind(this);
+    this.addEvent = this.addEvent.bind(this)
 
     this.state = {
       FlatListItems: [{ id: '0', value: "All Day", event:[], icon: ""}, 
@@ -128,7 +129,6 @@ export default class EventPicker extends React.Component {
 
       this.setState({FlatListItems: list});
       
-      
     } catch (error) {
       console.error(error);
     }
@@ -188,7 +188,6 @@ componentDidMount() {
     }
   };
   
-
   fetchAllEvents = async () => {
     this.resetFlatList();
     let allEvents = {};
@@ -200,10 +199,8 @@ componentDidMount() {
     } catch (error) {
       Alert.alert("Failed to get events");
     }
-
-    
     let list = this.state.FlatListItems;
-
+    
       for(let i=0; i< allEvents.length; i++)
       {
 
@@ -211,11 +208,10 @@ componentDidMount() {
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
         let endDate = moment(allEvents[i].endDate);
-        let endHour = new Date(endDate).getHours();
-        let currentDate = new Date(moment()).getDate();
         
-        if(new Date(startDate).getDate() != new Date(endDate).getDate())
+        if(allEvents[i].allDay)
         {
+          
           list[0].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location];
         }
         else if(hour >= 6 && hour <=23)
@@ -237,19 +233,35 @@ componentDidMount() {
       <View style={{height: 1, width: '100%', backgroundColor: '#C8C8C8'}}/>
     );
   };
+
+  addEvent() {
+    const eventConfig = {
+      title: "",
+      // and other options
+    };
+    AddCalendarEvent.presentEventCreatingDialog(eventConfig).then((eventInfo) => {
+    if(eventInfo.action === "SAVED")
+    {
+      this.fetchAllEvents();
+    }
+  })
+  .catch((error) => {
+    // handle error such as when user rejected permissions
+    console.warn(error);
+  });
+  }
     
   render() 
   {
-
     return (
       <FlatList
         data={this.state.FlatListItems}
         //data defined in constructor
         ItemSeparatorComponent={this.FlatListItemSeparator}
         //Item Separator View
-        renderItem={({ item}) => (
+        renderItem={({ item}) => (          
           <View style = {styles.container}>
-            <View style = {styles.list}>
+            <TouchableOpacity style = {styles.list} onPress={()=>this.addEvent()}>
               <View>
                 <Text
                   style={styles.item}>
@@ -260,13 +272,14 @@ componentDidMount() {
                 <Image source={item.icon} style={{height: 50, width: 50}} />
               </View>
               <TouchableOpacity>
-              <View  style={{backgroundColor:'lightgrey'}}>
-                <Text>{item.event}</Text>
-              </View>
+                <View  style={{backgroundColor:'lightgrey'}}>
+                  <Text>{item.event}</Text>
+                </View>
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+            
           </View>
-    )}
+        )}
     keyExtractor={(item, index) => index.toString()}
   />
 

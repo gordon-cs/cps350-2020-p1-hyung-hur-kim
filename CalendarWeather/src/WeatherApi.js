@@ -5,6 +5,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import moment from "moment";
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
 /* WeatherNow component gives an overall summary of today's weather
@@ -13,23 +14,63 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
  */
 
 export default class WeatherNow extends Component {
+	constructor(props) {
+		super(props);        // Always do this first, to make props valid
+		this.state = {       // Initialize state (don't call setState in ctor)
+		  weatherData: this.props.weatherData,
+		  selectedDate: this.props.selectedDate,
+		}
+	  }
 
+	  UNSAFE_componentWillReceiveProps(nextProps) {
+		// Any time props.email changes, update state.
+		if (nextProps.selectedDate !== this.props.selectedDate)
+		  this.setState({
+			selectedDate: nextProps.selectedDate,
+		  });
+		  
+		}
   	render() {
-		// Parse temperature data: Current Temperature
-		let temp = Number((this.props.weatherData.currently.temperature).toFixed()) + " \u2109";
-		let todayLow = Number((this.props.weatherData.daily.data[0].temperatureMin).toFixed());
-		let todayHigh = Number((this.props.weatherData.daily.data[0].temperatureHigh).toFixed());
-		let feelsLike = Number((this.props.weatherData.currently.apparentTemperature).toFixed());
-		let todayRange = todayLow + " \u2109" + " / " + todayHigh + " \u2109";
-		//const sunriseString = Date(this.props.weatherData.daily.data[0].sunriseTime).toString();
-		//const sunsetString = Date(this.props.weatherData.daily.data[0].sunsetTime).toString();
-		const dateString = Date(this.props.weatherData.currently.time).toString();
-		var date = new Date(dateString);
-		//var sunrise = new Date(this.props.weatherData.daily.data[0].sunriseTime);
-		//var sunset = new Date(this.props.weatherData.daily.data[0].sunsetTime);
+		let averageTemp;
+		let lowTemp;
+		let highTemp;
+		let feelsLike;
+		let range;
+		let time;
+		let summary;
+		let dateString;
+		let selectedDate = new Date(this.state.selectedDate).getDate();
+		let currentDate = new Date(moment()).getDate();
+		let index = selectedDate - currentDate;
+		console.log(index);
+
+		if(index === 0)
+		{
+			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u2109";
+			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed());
+			range = lowTemp + " \u2109" + " / " + highTemp + " \u2109";
+			dateString = Date(this.state.weatherData.currently.time).toString();
+			let date = new Date(dateString);
+			time = format(date, "EEE, MMM do, yyyy H:mm a");
+			summary = this.state.weatherData.currently.summary;
+		}
+		else
+		{
+			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u2109";
+			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed();
+			range = lowTemp + " \u2109" + " / " + highTemp + " \u2109";
+			dateString = Date(this.state.weatherData.daily.data[index].time);
+			let date = new Date(this.state.weatherData.daily.data[index].time*1000);
+			time = format(date, "EEE, MMM do, yyyy H:mm a");
+			summary = this.state.weatherData.daily.data[index].summary;
+		}
 		
 		// Formats date and time appropriately
-		var formattedCurrentDate = format(date, "EEE, MMM do, yyyy h:mm a");
+		let formattedCurrentDate = format(date, "EEE, MMM do, yyyy h:mm a");
 		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
 		//var formattedSunset = format(sunset, "h:mm a");
 
@@ -39,15 +80,15 @@ export default class WeatherNow extends Component {
 					<Text style={styles.geoLoc}>
 						Wenham, MA
 					</Text>
-					<Text>{formattedCurrentDate}</Text>
+					<Text>{time}</Text>
 					<Text style={styles.curTemp}>
-						{temp}
+						{averageTemp}
 					</Text>
 					<Text style={styles.feelsLike}>
 						Feels like {feelsLike + " \u2109"}
 					</Text>
 					<Text style={styles.summary}>
-						{this.props.weatherData.currently.summary}
+						{summary}
 					</Text>
 				</View>
 				<View style={styles.box2} >
@@ -55,7 +96,7 @@ export default class WeatherNow extends Component {
 						<Text>
 							Today
 						</Text>
-						<Text style={styles.tempHighLow}>{todayRange}</Text>
+						<Text style={styles.tempHighLow}>{range}</Text>
 					</View>
 					<View style={styles.box2_2}>
 						<Text>Sunrise            Sunset</Text>
