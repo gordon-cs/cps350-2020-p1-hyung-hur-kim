@@ -196,7 +196,6 @@ componentDidMount() {
         (moment(this.state.currentSelectedDate)).format("YYYY-MM-DD[T]00:00:00.000[Z]"),
         (moment(this.state.currentSelectedDate)).add(1, 'day').format("YYYY-MM-DD[T]00:00:00.000[Z]"),
       );
-      console.log(allEvents);
     } catch (error) {
       Alert.alert("Failed to get events");
     }
@@ -244,10 +243,6 @@ componentDidMount() {
     if(eventInfo.action === "SAVED")
     {
       this.fetchAllEvents();
-    }
-    else
-    {
-      console.warn(JSON.stringify(eventInfo));
     }
   })
   .catch((error) => {
