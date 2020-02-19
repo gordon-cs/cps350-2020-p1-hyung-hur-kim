@@ -15,13 +15,10 @@ export default class App extends React.Component {
     super(props);
   }
   render() {
-    currentDate = new Date();
   
     return (
       <View style={{ flex: 1}}>
-        <WeatherNow></WeatherNow>
-        <CalendarView currentDate={currentDate}/>
-        
+        <CalendarView/>
       </View>
 
     );

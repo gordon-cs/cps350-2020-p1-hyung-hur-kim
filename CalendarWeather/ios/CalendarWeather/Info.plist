@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSCalendarsUsageDescription</key>
+	<key>NSContactsUsageDescription</key>
 	<key>CFBundleDisplayName</key>
 	<string>CalendarWeather</string>
 	<key>CFBundleExecutable</key>

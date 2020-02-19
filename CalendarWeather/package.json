@@ -10,7 +10,6 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "@mobiscroll/react": "https://npm.mobiscroll.com/@mobiscroll/react-trial/-/react-trial-4.10.2.tgz",
         "date-fns": "^2.9.0",
         "expo-calendar": "^8.0.0",
         "moment": "^2.24.0",
