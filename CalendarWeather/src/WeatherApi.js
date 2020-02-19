@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { format } from "date-fns"; // Changes date format
+import styles from './WeatherApi.style'
 import {
   Text,
   View,
-  StyleSheet,
 } from 'react-native';
 import moment from "moment";
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
@@ -13,8 +13,6 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
  * data comes from props.
  */
 
-const height = '20%';
-const width = '100%';
 export default class WeatherNow extends Component {
 	constructor(props) {
 		super(props);        // Always do this first, to make props valid
@@ -104,65 +102,3 @@ export default class WeatherNow extends Component {
     	);
   }
 }
-
-const styles = StyleSheet.create({
-	screen: {
-		width,
-		height,
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-around',
-		backgroundColor: 'lightgrey',
-		},
-	box1: {
-		width: '51%',
-		height: '90%',
-		flexDirection: 'column',
-		//alignItems: 'center',
-		justifyContent: 'flex-start',
-		backgroundColor: 'white',
-		},
-	box2: {
-		width: '46%',
-		height: '90%',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		//backgroundColor: 'white',
-		},
-	box2_1: {
-		width: '100%',
-		height: '48%',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'space-around',
-		backgroundColor: 'white',
-		},
-	box2_2: {
-		width: '100%',
-		height: '48%',
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-		backgroundColor: 'white',
-		},
-	geoLoc: {
-		alignItems: 'center',
-		fontSize: 18,
-		},
-	curTemp: {
-		fontSize: 55,
-		fontWeight: 'bold',
-		alignSelf: 'center',
-		},
-	summary: {
-		fontSize: 20,
-		alignSelf: 'center',
-	},
-	tempHighLow: {
-		fontSize: 30,
-	},
-	feelsLike: {
-		alignSelf: 'center',
-	}
-});
