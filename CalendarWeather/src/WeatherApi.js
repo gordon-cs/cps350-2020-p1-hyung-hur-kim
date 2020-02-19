@@ -69,6 +69,10 @@ export default class WeatherNow extends Component {
 			summary = this.state.weatherData.daily.data[index].summary;
 		}
 		
+		// Formats date and time appropriately
+		let formattedCurrentDate = format(date, "EEE, MMM do, yyyy h:mm a");
+		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
+		//var formattedSunset = format(sunset, "h:mm a");
 
     	return (
 			<View style={styles.screen}>
