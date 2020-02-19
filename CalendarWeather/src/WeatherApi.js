@@ -29,9 +29,9 @@ export default class WeatherNow extends Component {
 		//var sunset = new Date(this.props.weatherData.daily.data[0].sunsetTime);
 		
 		// Formats date and time appropriately
-		var formattedCurrentDate = format(date, "EEE, MMM do, yyyy H:mm a");
-		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy H:mm a");
-		//var formattedSunset = format(sunset, "H:mm a");
+		var formattedCurrentDate = format(date, "EEE, MMM do, yyyy h:mm a");
+		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
+		//var formattedSunset = format(sunset, "h:mm a");
 
     	return (
 			<View style={styles.screen}>
