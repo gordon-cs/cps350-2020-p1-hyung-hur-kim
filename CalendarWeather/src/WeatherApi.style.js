@@ -1,6 +1,7 @@
+// StyleSheet for WeatherApi.js
 import { StyleSheet } from 'react-native';
 
-const height = '20%';
+const height = '25%';
 const width = '100%';
 
  export default StyleSheet.create({
