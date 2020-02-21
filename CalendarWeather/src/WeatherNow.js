@@ -8,8 +8,10 @@ import {
   Text,
   View,
 } from 'react-native';
+import { format } from "date-fns"; // Changes date format
 
-import WeatherApi from './WeatherApi'
+import styles from './WeatherApi.style'
+import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
 
 /* WeatherData gets weather data and renders a view of the weather.
@@ -57,7 +59,7 @@ class WeatherData extends Component {
     }
 
   render() {
-    
+
     if (this.state.isLoading) {
       // No data, show something in the meantime
       return (
@@ -65,9 +67,77 @@ class WeatherData extends Component {
         </Text>
       );
     } else {
-      // Show data from API
+      
+    let averageTemp;
+		let lowTemp;
+		let highTemp;
+		let feelsLike;
+		let range;
+		let time;
+		let summary;
+		let dateString;
+		let selectedDate = new Date(this.state.selectedDate).getDate();
+		let currentDate = new Date(moment()).getDate();
+		let index = selectedDate - currentDate;
+    let date = currentDate;
+    if(index === 0)
+		{
+			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
+			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed());
+			range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
+			dateString = Date(this.state.weatherData.currently.time).toString();
+			date = new Date(dateString);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			summary = this.state.weatherData.currently.summary;
+		}
+		else
+		{
+			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
+			dateString = Date(this.state.weatherData.daily.data[index].time);
+			date = new Date(this.state.weatherData.daily.data[index].time*1000);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			summary = this.state.weatherData.daily.data[index].summary;
+		}
+		
+		// Formats date and time appropriately
+		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
+		//var formattedSunset = format(sunset, "h:mm a");
+    
       return (
-		  <WeatherApi weatherData={this.state.weatherData} selectedDate = {this.state.selectedDate}> </WeatherApi>
+        <View style={styles.screen}>
+				<View style={styles.box1} >
+					<Text style={styles.geoLoc}>
+						Wenham, MA
+					</Text>
+					<Text>{time}</Text>
+					<Text style={styles.curTemp}>
+						{averageTemp}
+					</Text>
+					<Text style={styles.feelsLike}>
+						Feels like {feelsLike}
+					</Text>
+					<Text style={styles.summary}>
+						{summary}
+					</Text>
+				</View>
+				<View style={styles.box2} >
+					<View style={styles.box2_1}>
+						<Text>
+							Today
+						</Text>
+						<Text style={styles.tempHighLow}>{range}</Text>
+					</View>
+					<View style={styles.box2_2}>
+						<Text>Sunrise            Sunset</Text>
+					</View>
+				</View>
+			</View>
       );
     }
   }
