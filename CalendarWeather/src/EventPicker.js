@@ -6,6 +6,7 @@ import { StyleSheet, FlatList, Text, View, Alert, Dimensions, Image, TouchableOp
 import RNCalendarEvents from "react-native-calendar-events";
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import moment from "moment";
+import { format } from "date-fns";
 
 let { width } = Dimensions.get('window');
 RNCalendarEvents.authorizationStatus().then(response => {
@@ -253,13 +254,34 @@ componentDidMount() {
     
   render() 
   {
+    
     return (
       <FlatList
         data={this.state.FlatListItems}
         //data defined in constructor
         ItemSeparatorComponent={this.FlatListItemSeparator}
         //Item Separator View
-        renderItem={({ item}) => (          
+        renderItem={({ item}) => 
+        {
+          let title;
+          let time;
+          let location;
+
+          if(item.event[0] != undefined)
+          {
+            time = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>
+              {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
+            if(item.event[2] != undefined)
+            {
+                title = (<Text style = {{color: '#615B73', fontWeight: '600', minHeight: 15}}>{item.event[2]}</Text>);
+            }
+            if(item.event[3] != "")
+            {
+              location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>{item.event[3]}</Text>);
+            }
+
+          }
+          return (          
           <View style = {styles.container}>
             <TouchableOpacity style = {styles.list} onPress={()=>this.addEvent()}>
               <View>
@@ -273,13 +295,16 @@ componentDidMount() {
               </View>
               <TouchableOpacity>
                 <View  style={{backgroundColor:'lightgrey'}}>
-                  <Text>{item.event}</Text>
+                  {title}
+                  {location}
+                  {time}
                 </View>
               </TouchableOpacity>
             </TouchableOpacity>
             
           </View>
-        )}
+        );}
+      }
     keyExtractor={(item, index) => index.toString()}
   />
 

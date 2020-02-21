@@ -42,6 +42,7 @@ export default class WeatherNow extends Component {
 		let selectedDate = new Date(this.state.selectedDate).getDate();
 		let currentDate = new Date(moment()).getDate();
 		let index = selectedDate - currentDate;
+		let date = currentDate;
 		console.log(index);
 
 		if(index === 0)
@@ -52,8 +53,8 @@ export default class WeatherNow extends Component {
 			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed());
 			range = lowTemp + " \u2109" + " / " + highTemp + " \u2109";
 			dateString = Date(this.state.weatherData.currently.time).toString();
-			let date = new Date(dateString);
-			time = format(date, "EEE, MMM do, yyyy H:mm a");
+			date = new Date(dateString);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
 			summary = this.state.weatherData.currently.summary;
 		}
 		else
@@ -64,8 +65,8 @@ export default class WeatherNow extends Component {
 			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed();
 			range = lowTemp + " \u2109" + " / " + highTemp + " \u2109";
 			dateString = Date(this.state.weatherData.daily.data[index].time);
-			let date = new Date(this.state.weatherData.daily.data[index].time*1000);
-			time = format(date, "EEE, MMM do, yyyy H:mm a");
+			date = new Date(this.state.weatherData.daily.data[index].time*1000);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
 			summary = this.state.weatherData.daily.data[index].summary;
 		}
 		
