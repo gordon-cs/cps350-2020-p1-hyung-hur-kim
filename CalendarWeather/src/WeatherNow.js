@@ -13,7 +13,7 @@ import { format } from "date-fns"; // Changes date format
 import styles from './WeatherApi.style'
 import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
-
+import ModalDropdown from 'react-native-modal-dropdown'; // Creates dropdown menus
 /* WeatherData gets weather data and renders a view of the weather.
  * (Currently it "gets" static data: a fake temperature.)
  * It will eventually use data from the Dark Sky API (http://darksky.net).
@@ -74,6 +74,8 @@ class WeatherData extends Component {
 		let feelsLike;
 		let range;
 		let time;
+		//let sunrise;
+		//let sunset;
 		let summary;
 		let dateString;
 		let selectedDate = new Date(this.state.selectedDate).getDate();
@@ -85,7 +87,7 @@ class WeatherData extends Component {
 			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
 			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
-			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed());
+			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
 			dateString = Date(this.state.weatherData.currently.time).toString();
 			date = new Date(dateString);
@@ -94,10 +96,14 @@ class WeatherData extends Component {
 		}
 		else
 		{
-			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh
+								+ this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed()
+								+ " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
 			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
-			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh
+							  + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed()
+							  + " \u00B0" + this.state.tempScale;
 			range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
 			dateString = Date(this.state.weatherData.daily.data[index].time);
 			date = new Date(this.state.weatherData.daily.data[index].time*1000);
@@ -112,9 +118,12 @@ class WeatherData extends Component {
       return (
         <View style={styles.screen}>
 				<View style={styles.box1} >
-					<Text style={styles.geoLoc}>
-						Wenham, MA
-					</Text>
+					<ModalDropdown options={['Wenham, MA', 'Boston, MA', 'Los Angeles, CA', 'City, CT', 'Sample, SM']}
+								defaultIndex={1}
+								defaultValue="Wenham, MA"
+								textStyle={styles.geoLocPicker}
+							 // onSelect {(value) => this.setState}
+								/>
 					<Text>{time}</Text>
 					<Text style={styles.curTemp}>
 						{averageTemp}

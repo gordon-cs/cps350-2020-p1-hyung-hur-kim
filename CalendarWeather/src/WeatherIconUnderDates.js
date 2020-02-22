@@ -16,7 +16,7 @@ export default class WeatherIconUnderDates extends React.Component {
     this.state = {
       WeatherIcons: [
         {image:""},
-        {image: ""},
+        {image:""},
         {image:""},
         {image:""},
         {image:""},
@@ -69,9 +69,6 @@ export default class WeatherIconUnderDates extends React.Component {
     }
     this.setState({WeatherIcons: arrayOfIcons});
   }
-
- // Weather icon "sunny.png", "rainy.png" and "cloudy.png" by Sihan Liu
- // is licensed under CC BY 3.0 https://www.iconfinder.com/iconsets/weather-color-2
 
   render() {
     return (

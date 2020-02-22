@@ -45,9 +45,8 @@ const width = '100%';
 		justifyContent: 'flex-end',
 		backgroundColor: 'white',
 		},
-	geoLoc: {
-		alignItems: 'center',
-		fontSize: 18,
+	geoLocPicker: {
+		fontSize: 20,
 		},
 	curTemp: {
 		fontSize: 50,
