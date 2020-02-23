@@ -6,6 +6,7 @@ import {
   } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown'; // Creates dropdown menus
 
+
 class LocationPicker extends Component {
     render () {
         return (
@@ -21,6 +22,7 @@ class LocationPicker extends Component {
 }
 
 export default LocationPicker;
+
 
 const styles = StyleSheet.create({
     geoLocPicker: {

@@ -8,6 +8,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Switch
 } from 'react-native';
 import { format } from "date-fns"; // Changes date format
 
@@ -28,6 +29,7 @@ class WeatherData extends Component {
 		isLoading: true,
 		tempScale : "F",
 		selectedDate : this.props.currentDate,
+		unit: "us",
 		}
 		// Set up methods by binding this for them
 		this.componentDidMount = this.componentDidMount.bind(this);
@@ -42,9 +44,12 @@ class WeatherData extends Component {
 		let weatherData = await getWeatherApi();
 		let weatherTimeMachine = await getWeatherApiTMR();
 		let tempScale = "C";
+		//let weatherDataSI = await getWeatherApiSI();
+		
 		if (weatherData.flags.units == "us") {
 			tempScale = "F";
 		}
+		
 		this.setState({
 			isLoading: false,
 			weatherData: weatherData,
@@ -62,12 +67,14 @@ class WeatherData extends Component {
 		
 	}
 	
+	_changeScale = () => {
+		this.setState({
+			unit: this.state.unit
+			? "si"
+			: "us"
+            }), () => { this.getWeatherApi(); }
+		};
 
-	onPress = () => {
-			this.setState({
-			count: this.state.count+1
-			})
-		}
 
   	render() {
 
@@ -79,6 +86,7 @@ class WeatherData extends Component {
 		);
 		} else {
 		
+			let tempScale
 		let averageTemp;
 			let lowTemp;
 			let highTemp;
@@ -146,9 +154,10 @@ class WeatherData extends Component {
 				<View style={styles.box1} >
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 						<LocationPicker></LocationPicker>
-						<TouchableOpacity onPress={this._onPressButton}>
+						<TouchableOpacity onPress={this._changeScale}>
 							<Text style={{fontSize: 20}}>C/F</Text>
     					</TouchableOpacity>
+						
 					</View>
 					<Text>{time}</Text>
 					<Text style={styles.curTemp}>
@@ -171,7 +180,6 @@ class WeatherData extends Component {
 						<Text style={styles.tempHighLow}>{range}</Text>
 					</View>
 					<View style={styles.box2_2}>
-
 						<Text>{sunriseFormatted}      {sunsetFormatted}</Text>
 						<Text>Sunrise            Sunset</Text>
 					</View>
