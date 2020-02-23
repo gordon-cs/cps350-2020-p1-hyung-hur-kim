@@ -85,7 +85,7 @@ class WeatherData extends Component {
 			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
 			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
-			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed());
+			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
 			dateString = Date(this.state.weatherData.currently.time).toString();
 			date = new Date(dateString);
