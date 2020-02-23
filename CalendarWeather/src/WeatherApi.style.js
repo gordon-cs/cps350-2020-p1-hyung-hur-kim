@@ -58,7 +58,7 @@ const width = '100%';
 		alignSelf: 'center',
 	},
 	tempHighLow: {
-		fontSize: 30,
+		fontSize: 28,
 	},
 	feelsLike: {
 		alignSelf: 'center',

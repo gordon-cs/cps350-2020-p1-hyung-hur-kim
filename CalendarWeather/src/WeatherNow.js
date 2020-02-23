@@ -14,7 +14,9 @@ import { format } from "date-fns"; // Changes date format
 import styles from './WeatherApi.style'
 import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
+import getWeatherApiTMR from './WeatherApiTMR';
 import LocationPicker from './DropdownLocationPicker';
+
 /* WeatherData gets weather data and renders a view of the weather.
  * (Currently it "gets" static data: a fake temperature.)
  * It will eventually use data from the Dark Sky API (http://darksky.net).
@@ -38,6 +40,7 @@ class WeatherData extends Component {
 	*/
 	async componentDidMount() {
 		let weatherData = await getWeatherApi();
+		let weatherTimeMachine = await getWeatherApiTMR();
 		let tempScale = "C";
 		if (weatherData.flags.units == "us") {
 			tempScale = "F";
@@ -45,6 +48,7 @@ class WeatherData extends Component {
 		this.setState({
 			isLoading: false,
 			weatherData: weatherData,
+			weatherTimeMachine: weatherTimeMachine,
 			tempScale: tempScale,
 		});
 	}
@@ -81,8 +85,13 @@ class WeatherData extends Component {
 			let feelsLike;
 			let range;
 			let time;
-			let sunrise;
-			let sunset;
+			let sunriseUnix;
+			let sunriseHumanTime;
+			let sunriseFormatted
+			let sunsetUnix;
+			let sunsetHumanTime;
+			let sunsetFormatted;
+			var fromUnixTime = require('date-fns/fromUnixTime');
 			let summary;
 			let dateString;
 			let selectedDate = new Date(this.state.selectedDate).getDate();
@@ -96,8 +105,14 @@ class WeatherData extends Component {
 				highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
 				feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
 				range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
-				sunrise = Number((this.state.weatherData.daily.data[0]))
-				sunset
+				sunriseUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunriseTime)).toString();
+					sunriseHumanTime = fromUnixTime(sunriseUnix).toString();
+					let sunriseDateTime = new Date(sunriseHumanTime);
+					sunriseFormatted = format(sunriseDateTime, "h:mm a");
+				sunsetUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunsetTime)).toString();
+					sunsetHumanTime = fromUnixTime(sunsetUnix).toString();
+					let sunsetDateTime = new Date(sunsetHumanTime);
+					sunsetFormatted = format(sunsetDateTime, "h:mm a");
 				dateString = Date(this.state.weatherData.currently.time).toString();
 				date = new Date(dateString);
 				time = format(date, "EEE, MMM do, yyyy h:mm a");
@@ -114,6 +129,8 @@ class WeatherData extends Component {
 								+ this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed()
 								+ " \u00B0" + this.state.tempScale;
 				range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
+				sunriseUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunriseTime)).toString();
+				sunsetUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunsetTime)).toString();
 				dateString = Date(this.state.weatherData.daily.data[index].time);
 				date = new Date(this.state.weatherData.daily.data[index].time*1000);
 				time = format(date, "EEE, MMM do, yyyy h:mm a");
@@ -154,6 +171,8 @@ class WeatherData extends Component {
 						<Text style={styles.tempHighLow}>{range}</Text>
 					</View>
 					<View style={styles.box2_2}>
+
+						<Text>{sunriseFormatted}      {sunsetFormatted}</Text>
 						<Text>Sunrise            Sunset</Text>
 					</View>
 				</View>
