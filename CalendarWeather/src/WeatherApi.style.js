@@ -1,7 +1,7 @@
 // StyleSheet for WeatherApi.js
 import { StyleSheet } from 'react-native';
 
-const height = '25%';
+const height = '22%';
 const width = '100%';
 
  export default StyleSheet.create({
@@ -45,16 +45,16 @@ const width = '100%';
 		justifyContent: 'flex-end',
 		backgroundColor: 'white',
 		},
-	geoLocPicker: {
-		fontSize: 20,
-		},
+	dropdown: {
+		fontSize: 18,
+	},
 	curTemp: {
 		fontSize: 50,
 		//fontWeight: 'bold',
 		alignSelf: 'center',
 		},
 	summary: {
-		fontSize: 20,
+		//fontSize: 20,
 		alignSelf: 'center',
 	},
 	tempHighLow: {
