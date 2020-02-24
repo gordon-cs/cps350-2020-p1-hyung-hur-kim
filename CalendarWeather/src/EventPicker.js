@@ -33,23 +33,21 @@ export default class EventPicker extends React.Component {
     super(props);
     
     this.fetchAllEvents = this.fetchAllEvents.bind(this);
-    this.addEvent = this.addEvent.bind(this)
-
     this.state = {
-      FlatListItems: [{ id: '0', value: "All Day", event:[], icon: ""}, 
-      {id: '1', value: '6 AM', event: [], icon: ""},
-      { id: '2', value: '7 AM', event: [], icon: ""},{ id: '3', value: '8 AM', event: [], icon: ""},
-      { id: '4', value: '9 AM', event: [] , icon: "" },{ id: '5', value: '10 AM' , event: [], icon: "" },
-      { id: '6', value: '11 AM' , event: [] , icon: ""},{ id: '7', value: '12 PM' , event: [] , icon: ""},
-      { id: '8', value: '1 PM' , event: [] , icon: ""},{ id: '9', value: '2 PM', event: [] , icon: "" },
-      { id: '10', value: '3 PM' , event: [] , icon: ""},{ id: '11', value: '4 PM' , event: [] , icon: ""},
-      { id: '12', value: '5 PM' , event: [] , icon: ""},{ id: '13', value: '6 PM' , event: [] , icon: ""},
-      { id: '14', value: '7 PM' , event: [] , icon: ""},{ id: '15', value: '8 PM' , event: [] , icon: ""},
-      { id: '16', value: '9 PM' , event: [] , icon: ""},{ id: '17', value: '10 PM' , event: [] , icon: ""},
-      { id: '18', value: '11 PM' , event: [] , icon: ""},{ id: '19', value: '12 AM' , event: [] , icon: ""},
-      { id: '20', value: '1 AM' , event: [] , icon: ""},{ id: '21', value: '2 AM' , event: [] , icon: ""},
-      { id: '22', value: '3 AM' , event: [] , icon: ""},{ id: '23', value: '4 AM' , event: [] , icon: ""},
-      { id: '24', value: '5 AM' , event: [] , icon: ""},],
+      FlatListItems: [{ id: '0', value: "12 AM", event:[], icon: "", temp: "", eventID: ""}, 
+      {id: '1', value: '1 AM', event: [], icon: "", temp: "", eventID: ""},
+      { id: '2', value: '2 AM', event: [], icon: "", temp: "", eventID: ""},{ id: '3', value: '3 AM', event: [], icon: "", temp: "", eventID: ""},
+      { id: '4', value: '4 AM', event: [] , icon: "" , temp: "", eventID: ""},{ id: '5', value: '5 AM' , event: [], icon: "" , temp: "", eventID: ""},
+      { id: '6', value: '6 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '7', value: '7 AM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '8', value: '8 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '9', value: '9 AM', event: [] , icon: "" , temp: "", eventID: ""},
+      { id: '10', value: '10 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '11', value: '11 AM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '12', value: '12 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '13', value: '1 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '14', value: '2 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '15', value: '3 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '16', value: '4 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '17', value: '5 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '18', value: '6 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '19', value: '7 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '20', value: '8 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '21', value: '9 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '22', value: '10 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '23', value: '11 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""}],
       allCalendars: [],
       currentSelectedDate: this.props.currentDate,
       allEvents: [{
@@ -91,6 +89,7 @@ export default class EventPicker extends React.Component {
       for(let hour=0; hour<24; hour++)
       {
         let icon = this.state.futureWeatherData.hourly.data[hour].icon;
+        let temperature = Math.round(this.state.futureWeatherData.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
         let useIcon = sunny;
 
         if(icon == "rain")
@@ -120,11 +119,13 @@ export default class EventPicker extends React.Component {
   
         if(hour >=0 && hour <=5)
         {
-          list[hour+19].icon = useIcon;
+          list[hour].icon = useIcon;
+          list[hour].temp = temperature;
         }
         else
         {
-          list[hour-5].icon = useIcon;
+          list[hour].icon = useIcon;
+          list[hour].temp = temperature;
         }
       }
 
@@ -139,7 +140,7 @@ export default class EventPicker extends React.Component {
     return (
       //Item Separator
       <View
-        style={{ height: 0.5, width: '100%', backgroundColor: '#C8C8C8' }}
+        style={{ height: 0, width: '50%', backgroundColor: '#C8C8C8' }}
       />
     );
   };
@@ -163,20 +164,20 @@ componentDidMount() {
   resetFlatList()
   {
     let newFlatList = 
-      [{ id: '0', value: "All Day", event:[], icon: ""}, 
-      {id: '1', value: '6 AM', event: [], icon: ""},
-      { id: '2', value: '7 AM', event: [], icon: ""},{ id: '3', value: '8 AM', event: [], icon: ""},
-      { id: '4', value: '9 AM', event: [] , icon: "" },{ id: '5', value: '10 AM' , event: [], icon: "" },
-      { id: '6', value: '11 AM' , event: [] , icon: ""},{ id: '7', value: '12 PM' , event: [] , icon: ""},
-      { id: '8', value: '1 PM' , event: [] , icon: ""},{ id: '9', value: '2 PM', event: [] , icon: "" },
-      { id: '10', value: '3 PM' , event: [] , icon: ""},{ id: '11', value: '4 PM' , event: [] , icon: ""},
-      { id: '12', value: '5 PM' , event: [] , icon: ""},{ id: '13', value: '6 PM' , event: [] , icon: ""},
-      { id: '14', value: '7 PM' , event: [] , icon: ""},{ id: '15', value: '8 PM' , event: [] , icon: ""},
-      { id: '16', value: '9 PM' , event: [] , icon: ""},{ id: '17', value: '10 PM' , event: [] , icon: ""},
-      { id: '18', value: '11 PM' , event: [] , icon: ""},{ id: '19', value: '12 AM' , event: [] , icon: ""},
-      { id: '20', value: '1 AM' , event: [] , icon: ""},{ id: '21', value: '2 AM' , event: [] , icon: ""},
-      { id: '22', value: '3 AM' , event: [] , icon: ""},{ id: '23', value: '4 AM' , event: [] , icon: ""},
-      { id: '24', value: '5 AM' , event: [] , icon: ""},];
+      [{ id: '0', value: "12 AM", event:[], icon: "", temp: "", eventID: ""}, 
+      {id: '1', value: '1 AM', event: [], icon: "", temp: "", eventID: ""},
+      { id: '2', value: '2 AM', event: [], icon: "", temp: "", eventID: ""},{ id: '3', value: '3 AM', event: [], icon: "", temp: "", eventID: ""},
+      { id: '4', value: '4 AM', event: [] , icon: "" , temp: "", eventID: ""},{ id: '5', value: '5 AM' , event: [], icon: "" , temp: "", eventID: ""},
+      { id: '6', value: '6 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '7', value: '7 AM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '8', value: '8 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '9', value: '9 AM', event: [] , icon: "" , temp: "", eventID: ""},
+      { id: '10', value: '10 AM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '11', value: '11 AM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '12', value: '12 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '13', value: '1 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '14', value: '2 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '15', value: '3 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '16', value: '4 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '17', value: '5 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '18', value: '6 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '19', value: '7 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '20', value: '8 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '21', value: '9 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '22', value: '10 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '23', value: '11 PM' , event: [] , icon: "", temp: "", eventID: ""},
+      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""},];
     this.setState({FlatListItems: newFlatList});
   }
 
@@ -202,27 +203,20 @@ componentDidMount() {
     }
     let list = this.state.FlatListItems;
     
-      for(let i=0; i< allEvents.length; i++)
+    
+    for(let i=0; i< allEvents.length; i++)
       {
-
-        
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
         let endDate = moment(allEvents[i].endDate);
         
         if(allEvents[i].allDay)
         {
-          
-          list[0].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location];
-        }
-        else if(hour >= 6 && hour <=23)
-        {
-          
-          list[hour-5].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location]
+          list[24].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location, allEvents[i].id];
         }
         else
         {
-          list[hour-19].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location]
+          list[hour].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location, allEvents[i].id]
         }
       }
       this.setState({FlatListItems: list});
@@ -235,26 +229,47 @@ componentDidMount() {
     );
   };
 
-  addEvent() {
-    const eventConfig = {
-      title: "",
-      // and other options
-    };
-    AddCalendarEvent.presentEventCreatingDialog(eventConfig).then((eventInfo) => {
-    if(eventInfo.action === "SAVED")
-    {
-      this.fetchAllEvents();
-    }
-  })
-  .catch((error) => {
-    // handle error such as when user rejected permissions
-    console.warn(error);
-  });
+  editOrAddEvent(id, time)
+  {
+    let newTime = (moment().set('hour', time)).utc().format("YYYY-MM-DDTHH:00:00.000[Z]");
+
+      if(id == undefined)
+      {
+        const eventConfig = {
+          title: "",
+          startDate: newTime,
+        };
+        AddCalendarEvent.presentEventCreatingDialog(eventConfig).then((eventInfo) => {
+        
+        if(eventInfo.action === "SAVED")
+        {
+          this.fetchAllEvents();
+        }
+      })
+      .catch((error) => {
+        // handle error such as when user rejected permissions
+        console.warn(error);
+      });
+      }
+      else
+      {
+        let items = this.state.FlatListItems;
+      const eventConfig = {
+        eventId: id,
+      };
+      AddCalendarEvent.presentEventEditingDialog(eventConfig).then((eventInfo) => {
+          this.fetchAllEvents();
+    })
+    .catch((error) => {
+      // handle error such as when user rejected permissions
+      console.warn(error);
+    });
+      }
+      
   }
-    
+
   render() 
   {
-    
     return (
       <FlatList
         data={this.state.FlatListItems}
@@ -279,22 +294,23 @@ componentDidMount() {
             {
               location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>{item.event[3]}</Text>);
             }
-
+            
           }
           return (          
           <View style = {styles.container}>
-            <TouchableOpacity style = {styles.list} onPress={()=>this.addEvent()}>
+            <TouchableOpacity style = {styles.list}>
               <View>
                 <Text
                   style={styles.item}>
                   {item.value}
                 </Text>
               </View>
-              <View>
+              <View style={{flex: 1, flexDirection: "row"}}>
                 <Image source={item.icon} style={{height: 50, width: 50}} />
+                <Text style={{padding: 10,fontSize: 15,height: 44,}}>{item.temp}</Text>
               </View>
-              <TouchableOpacity>
-                <View  style={{backgroundColor:'lightgrey'}}>
+              <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
+                <View  style={{justifyContent: "flex-start", backgroundColor:'lightgrey', border: 0, }}>
                   {title}
                   {location}
                   {time}
@@ -342,7 +358,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
     marginLeft: 'auto'
-
-
-
   }});

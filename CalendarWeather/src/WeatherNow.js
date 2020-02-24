@@ -81,58 +81,41 @@ class WeatherData extends Component {
 			tempScale: "C"
 			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
 	}
-
-
   	render() {
 
-		if (this.state.isLoading) {
-		// No data, show something in the meantime
-		return (
-			<Text>Waiting for data ...
-			</Text>
-		);
-		} else {
-		
-			let tempScale
-		let averageTemp;
-			let lowTemp;
-			let highTemp;
-			let feelsLike;
-			let range;
-			let time;
-			let sunriseUnix;
-			let sunriseHumanTime;
-			let sunriseFormatted
-			let sunsetUnix;
-			let sunsetHumanTime;
-			let sunsetFormatted;
-			var fromUnixTime = require('date-fns/fromUnixTime');
-			let summary;
-			let dateString;
-			let selectedDate = new Date(this.state.selectedDate).getDate();
-			let currentDate = new Date(moment()).getDate();
-			let index = selectedDate - currentDate;
-		let date = currentDate;
-		if(index === 0)
-			{
-				averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
-				lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
-				highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
-				feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
-				range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
-				sunriseUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunriseTime)).toString();
-					sunriseHumanTime = fromUnixTime(sunriseUnix).toString();
-					let sunriseDateTime = new Date(sunriseHumanTime);
-					sunriseFormatted = format(sunriseDateTime, "h:mm a");
-				sunsetUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunsetTime)).toString();
-					sunsetHumanTime = fromUnixTime(sunsetUnix).toString();
-					let sunsetDateTime = new Date(sunsetHumanTime);
-					sunsetFormatted = format(sunsetDateTime, "h:mm a");
-				dateString = Date(this.state.weatherData.currently.time).toString();
-				date = new Date(dateString);
-				time = format(date, "EEE, MMM do, yyyy h:mm a");
-				summary = this.state.weatherData.currently.summary;
-			}
+    if (this.state.isLoading) {
+      // No data, show something in the meantime
+      return (
+        <Text>Waiting for data ...
+        </Text>
+      );
+    } else {
+      
+    let averageTemp;
+		let lowTemp;
+		let highTemp;
+		let feelsLike;
+		let range;
+		let time;
+		let summary;
+		let dateString;
+		let selectedDate = new Date(this.state.selectedDate).getDate();
+		let currentDate = new Date(moment()).getDate();
+		let index = selectedDate - currentDate;
+    let date = currentDate;
+    if(index === 0)
+		{
+			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
+			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
+			range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
+			dateString = Date(this.state.weatherData.currently.time).toString();
+			date = new Date(dateString);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			summary = this.state.weatherData.currently.summary;
+		}
+
 		else
 			{
 				averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh
