@@ -27,7 +27,7 @@ export default class WeatherIconUnderDates extends React.Component {
   }
 
   async componentDidMount() {
-    let weatherData = await getWeatherApi();
+    let weatherData = await getWeatherApi("F");
     this.setState({
         weatherData: weatherData,
       });

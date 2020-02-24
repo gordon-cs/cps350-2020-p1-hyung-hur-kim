@@ -29,10 +29,12 @@ class WeatherData extends Component {
 		isLoading: true,
 		tempScale : "F",
 		selectedDate : this.props.currentDate,
-		unit: "us",
+		// unit: "us", Troubleshooting: remove later
 		}
 		// Set up methods by binding this for them
 		this.componentDidMount = this.componentDidMount.bind(this);
+		this.changeScaleToC = this.changeScaleToC.bind(this);
+		this.changeScaleToF = this.changeScaleToF.bind(this);
 	}
 
 	/* Get real API data when component is first loaded.
@@ -41,9 +43,9 @@ class WeatherData extends Component {
 	* Todo: move API key to a file not in repo.
 	*/
 	async componentDidMount() {
-		let weatherData = await getWeatherApi();
-		let weatherTimeMachine = await getWeatherApiTMR();
 		let tempScale = "C";
+		let weatherData = await getWeatherApi(tempScale);
+		let weatherTimeMachine = await getWeatherApiTMR();
 		//let weatherDataSI = await getWeatherApiSI();
 		
 		if (weatherData.flags.units == "us") {
@@ -59,21 +61,26 @@ class WeatherData extends Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
+		console.log("receiving");
 		// Any time props.email changes, update state.
 		if (nextProps.currentDate !== this.props.currentDate)
 		this.setState({
 			selectedDate: nextProps.currentDate,
 		});
-		
 	}
 	
-	_changeScale = () => {
+	async changeScaleToF(){
 		this.setState({
-			unit: this.state.unit
-			? "si"
-			: "us"
-            }), () => { this.getWeatherApi(); }
-		};
+			tempScale: "F"
+			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
+
+	}
+
+	async changeScaleToC() {
+		this.setState({
+			tempScale: "C"
+			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
+	}
 
 
   	render() {
@@ -154,10 +161,12 @@ class WeatherData extends Component {
 				<View style={styles.box1} >
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 						<LocationPicker></LocationPicker>
-						<TouchableOpacity onPress={this._changeScale}>
-							<Text style={{fontSize: 20}}>C/F</Text>
+						<TouchableOpacity onPress={()=>this.changeScaleToC()}>
+							<Text style={{fontSize: 20}}>C</Text>
     					</TouchableOpacity>
-						
+						<TouchableOpacity onPress={()=>this.changeScaleToF()}>
+							<Text style={{fontSize: 20}}>F</Text>
+    					</TouchableOpacity>			
 					</View>
 					<Text>{time}</Text>
 					<Text style={styles.curTemp}>
