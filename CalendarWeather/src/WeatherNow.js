@@ -7,58 +7,81 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
+  TouchableOpacity,
+  Switch
 } from 'react-native';
 import { format } from "date-fns"; // Changes date format
 
 import styles from './WeatherApi.style'
 import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
+import getWeatherApiTMR from './WeatherApiTMR';
+import LocationPicker from './DropdownLocationPicker';
 
 /* WeatherData gets weather data and renders a view of the weather.
  * (Currently it "gets" static data: a fake temperature.)
  * It will eventually use data from the Dark Sky API (http://darksky.net).
  */
 class WeatherData extends Component {
-  constructor(props) {
-    super(props);        // Always do this first, to make props valid
-    this.state = {       // Initialize state (don't call setState in ctor)
-      isLoading: true,
-      tempScale : "F",
-      selectedDate : this.props.currentDate,
-    }
-    // Set up methods by binding this for them
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
+	constructor(props) {
+		super(props);        // Always do this first, to make props valid
+		this.state = {       // Initialize state (don't call setState in ctor)
+		isLoading: true,
+		tempScale : "F",
+		selectedDate : this.props.currentDate,
+		// unit: "us", Troubleshooting: remove later
+		}
+		// Set up methods by binding this for them
+		this.componentDidMount = this.componentDidMount.bind(this);
+		this.changeScaleToC = this.changeScaleToC.bind(this);
+		this.changeScaleToF = this.changeScaleToF.bind(this);
+	}
 
-  /* Get real API data when component is first loaded.
-   * (Later, might want to refresh this periodically)
-   * Caution: repo must stay private since it contains secret API key.
-   * Todo: move API key to a file not in repo.
-   */
-  async componentDidMount() {
-    let weatherData = await getWeatherApi();
-    let tempScale = "C";
-      if (weatherData.flags.units == "us") {
-        tempScale = "F";
-      }
-      this.setState({
-        isLoading: false,
-        weatherData: weatherData,
-        tempScale: tempScale,
-      });
+	/* Get real API data when component is first loaded.
+	* (Later, might want to refresh this periodically)
+	* Caution: repo must stay private since it contains secret API key.
+	* Todo: move API key to a file not in repo.
+	*/
+	async componentDidMount() {
+		let tempScale = "C";
+		let weatherData = await getWeatherApi(tempScale);
+		let weatherTimeMachine = await getWeatherApiTMR();
+		//let weatherDataSI = await getWeatherApiSI();
+		
+		if (weatherData.flags.units == "us") {
+			tempScale = "F";
+		}
+		
+		this.setState({
+			isLoading: false,
+			weatherData: weatherData,
+			weatherTimeMachine: weatherTimeMachine,
+			tempScale: tempScale,
+		});
+	}
 
-  }
+	UNSAFE_componentWillReceiveProps(nextProps) {
+		console.log("receiving");
+		// Any time props.email changes, update state.
+		if (nextProps.currentDate !== this.props.currentDate)
+		this.setState({
+			selectedDate: nextProps.currentDate,
+		});
+	}
+	
+	async changeScaleToF(){
+		this.setState({
+			tempScale: "F"
+			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // Any time props.email changes, update state.
-    if (nextProps.currentDate !== this.props.currentDate)
-      this.setState({
-        selectedDate: nextProps.currentDate,
-      });
-      
-    }
+	}
 
-  render() {
+	async changeScaleToC() {
+		this.setState({
+			tempScale: "C"
+			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
+	}
+  	render() {
 
     if (this.state.isLoading) {
       // No data, show something in the meantime
@@ -96,6 +119,7 @@ class WeatherData extends Component {
 			sunrise = format(new Date(this.state.weatherData.daily.data[0].sunriseTime*1000), "h:mm a");
 			sunset = format(new Date(this.state.weatherData.daily.data[0].sunsetTime*1000), "h:mm a");
 		}
+
 		else
 		{
 			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
@@ -115,22 +139,30 @@ class WeatherData extends Component {
 		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
 		//var formattedSunset = format(sunset, "h:mm a");
     
-      return (
-        <View style={styles.screen}>
+      	return (
+        	<View style={styles.screen}>
 				<View style={styles.box1} >
-					<Text style={styles.geoLoc}>
-						Wenham, MA
-					</Text>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+						<LocationPicker></LocationPicker>
+						<TouchableOpacity onPress={()=>this.changeScaleToC()}>
+							<Text style={{fontSize: 20}}>C</Text>
+    					</TouchableOpacity>
+						<TouchableOpacity onPress={()=>this.changeScaleToF()}>
+							<Text style={{fontSize: 20}}>F</Text>
+    					</TouchableOpacity>			
+					</View>
 					<Text>{time}</Text>
 					<Text style={styles.curTemp}>
 						{averageTemp}
 					</Text>
-					<Text style={styles.feelsLike}>
-						Feels like {feelsLike}
-					</Text>
-					<Text style={styles.summary}>
-						{summary}
-					</Text>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+						<Text style={styles.summary}>
+							{summary}
+						</Text>
+						<Text style={styles.feelsLike}>
+							Feels like {feelsLike}
+						</Text>
+					</View>
 				</View>
 				<View style={styles.box2} >
 					<View style={styles.box2_1}>
@@ -151,9 +183,9 @@ class WeatherData extends Component {
 					</View>
 				</View>
 			</View>
-      );
+        );
     }
-  }
+}
 }
 
 export default WeatherData;
