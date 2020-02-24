@@ -25,7 +25,6 @@ let snow = require('./snow.png');
 let clearNight = require('./clear-night.png');
 let partlyCloudyNight = require('./partly-cloudy-night.png');
 
-
 let calendars = [];
   
 export default class EventPicker extends React.Component {  
@@ -231,7 +230,7 @@ componentDidMount() {
 
   editOrAddEvent(id, time)
   {
-    let newTime = (moment().set('hour', time)).utc().format("YYYY-MM-DDTHH:00:00.000[Z]");
+    let newTime = (moment(this.state.currentSelectedDate).set('hour', time)).utc().format("YYYY-MM-DDTHH:00:00.000[Z]");
 
       if(id == undefined)
       {
@@ -278,6 +277,9 @@ componentDidMount() {
         //Item Separator View
         renderItem={({ item}) => 
         {
+          let view;
+          let withoutEventView;
+
           let title;
           let time;
           let location;
@@ -294,8 +296,26 @@ componentDidMount() {
             {
               location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>{item.event[3]}</Text>);
             }
-            
+
+            view = (
+              <View  style={{justifyContent: "flex-start", backgroundColor:'#dcdcdc', border: 0, }}>
+                {title}
+                {location}
+                {time}
+              </View>
+        );
+
           }
+          else 
+          {
+            view = (<View  style={{justifyContent: "flex-start", border: 0}}>
+              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "lightgrey"}}>+</Text>
+            </View>);
+          }
+
+          
+
+          
           return (          
           <View style = {styles.container}>
             <TouchableOpacity style = {styles.list}>
@@ -310,11 +330,7 @@ componentDidMount() {
                 <Text style={{padding: 10,fontSize: 15,height: 44,}}>{item.temp}</Text>
               </View>
               <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
-                <View  style={{justifyContent: "flex-start", backgroundColor:'lightgrey', border: 0, }}>
-                  {title}
-                  {location}
-                  {time}
-                </View>
+                {view}
               </TouchableOpacity>
             </TouchableOpacity>
             

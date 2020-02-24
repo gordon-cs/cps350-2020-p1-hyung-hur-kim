@@ -9,7 +9,7 @@ export default async function getWeatherApi(tempScale) {
   if (tempScale == "F") {
     try {
       response = await fetch(darkskyURL + "/" + ApiKey + "/" + latLon);
-	  responseJson = await response.json();
+    responseJson = await response.json();
     } catch (error) {
       return error; }
   } else {

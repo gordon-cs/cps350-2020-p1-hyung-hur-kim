@@ -26,24 +26,24 @@ export default class CalendarView extends Component {
         <View style={{ flex: 1}}>
 		<WeatherNow currentDate = {this.state.currentSelectedDate}></WeatherNow>
         <CalendarStrip
-				      daySelectionAnimation={{
-			        		type: 'border',
-			        		duration: 200,
-			        		borderWidth: 1,
-			        		borderHighlightColor: 'black',
-				      }}
-				      style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
-				      calendarHeaderStyle={{ color: 'black' }}
-				      calendarColor={'white'}
-				      dateNumberStyle={{ color: 'black' }}
-				      dateNameStyle={{ color: 'black' }}
-				      highlightDateNumberStyle={{ color: 'red' }}
-				      highlightDateNameStyle={{ color: 'red' }}
-              iconContainer={{ flex: 0.1 }}
-              useIsoWeekday = {false}
-			  startingDate = {this.state.currentDate}
-			  onDateSelected = {(newDate) => this.setState({currentSelectedDate: new Date(newDate)})}
-			    />
+			daySelectionAnimation={{
+			    type: 'border',
+			    duration: 200,
+			    borderWidth: 1,
+			    borderHighlightColor: 'black',
+			}}
+			style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
+			calendarHeaderStyle={{ color: 'black' }}
+			calendarColor={'white'}
+			dateNumberStyle={{ color: 'darkgrey' }}
+			dateNameStyle={{ color: 'grey' }}
+			highlightDateNumberStyle={{ color: 'red' }}
+			highlightDateNameStyle={{ color: 'red' }}
+            iconContainer={{ flex: 0.1 }}
+            useIsoWeekday = {false}
+			startingDate = {this.state.currentDate}
+			onDateSelected = {(newDate) => this.setState({currentSelectedDate: new Date(newDate)})}
+		/>
 			<WeatherIconUnderDates currentDate = {this.state.currentDate}></WeatherIconUnderDates>
 			<EventPicker currentDate = {this.state.currentSelectedDate}></EventPicker>
         </View>

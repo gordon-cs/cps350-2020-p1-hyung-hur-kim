@@ -102,7 +102,9 @@ class WeatherData extends Component {
 		let selectedDate = new Date(this.state.selectedDate).getDate();
 		let currentDate = new Date(moment()).getDate();
 		let index = selectedDate - currentDate;
-    let date = currentDate;
+		let date = currentDate;
+		let sunrise;
+		let sunset;
     if(index === 0)
 		{
 			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
@@ -114,26 +116,24 @@ class WeatherData extends Component {
 			date = new Date(dateString);
 			time = format(date, "EEE, MMM do, yyyy h:mm a");
 			summary = this.state.weatherData.currently.summary;
+			sunrise = format(new Date(this.state.weatherData.daily.data[0].sunriseTime*1000), "h:mm a");
+			sunset = format(new Date(this.state.weatherData.daily.data[0].sunsetTime*1000), "h:mm a");
 		}
 
 		else
-			{
-				averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh
-									+ this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed()
-									+ " \u00B0" + this.state.tempScale;
-				lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
-				highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
-				feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh
-								+ this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed()
-								+ " \u00B0" + this.state.tempScale;
-				range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
-				sunriseUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunriseTime)).toString();
-				sunsetUnix = Number((this.state.weatherTimeMachine.daily.data[0].sunsetTime)).toString();
-				dateString = Date(this.state.weatherData.daily.data[index].time);
-				date = new Date(this.state.weatherData.daily.data[index].time*1000);
-				time = format(date, "EEE, MMM do, yyyy h:mm a");
-				summary = this.state.weatherData.daily.data[index].summary;
-			}
+		{
+			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
+			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
+			range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
+			dateString = Date(this.state.weatherData.daily.data[index].time);
+			date = new Date(this.state.weatherData.daily.data[index].time*1000);
+			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			summary = this.state.weatherData.daily.data[index].summary;
+			sunrise = format(new Date(this.state.weatherData.daily.data[index].sunriseTime*1000), "h:mm a");
+			sunset = format(new Date(this.state.weatherData.daily.data[index].sunsetTime*1000), "h:mm a");
+		}
 		
 		// Formats date and time appropriately
 		//var formattedSunrise = format(sunrise, "EEE, MMM do, yyyy h:mm a");
@@ -172,8 +172,14 @@ class WeatherData extends Component {
 						<Text style={styles.tempHighLow}>{range}</Text>
 					</View>
 					<View style={styles.box2_2}>
-						<Text>{sunriseFormatted}      {sunsetFormatted}</Text>
-						<Text>Sunrise            Sunset</Text>
+						<View style={{flexDirection: "column", marginRight: "15%"}}>
+							<Text style={{fontSize: 20}}>Sunrise</Text>
+							<Text>{sunrise}</Text>
+						</View>
+						<View style={{flexDirection: "column",}}>
+							<Text style={{fontSize: 20}}>Sunset</Text>
+							<Text>{sunset}</Text>
+						</View>
 					</View>
 				</View>
 			</View>
