@@ -9,6 +9,7 @@ let partlyCloudyDay = require('./partly-cloudy-day.png');
 let snow = require('./snow.png');
 let clearNight = require('./clear-night.png');
 let partlyCloudyNight = require('./partly-cloudy-night.png');
+import moment from "moment";
 
 export default class WeatherIconUnderDates extends React.Component {
   constructor(props) {
@@ -22,19 +23,22 @@ export default class WeatherIconUnderDates extends React.Component {
         {image:""},
         {image:""},
         {image:""},],
-        currentDate: this.props.currentDate,
+        selectedDate: this.props.currentDate,
       };
   }
 
   async componentDidMount() {
+    console.log(this.selectedDate > moment());
     let weatherData = await getWeatherApi();
-    this.setState({
-        weatherData: weatherData,
-      });
-    this.setIconsPerDay();
+      this.setState({
+          weatherData: weatherData,
+        });
+      this.setIconsPerDay();
+    
   }
 
   setIconsPerDay() {
+
     let arrayOfIcons = this.state.WeatherIcons;
     for(let i=0; i< 7; i++)
     {

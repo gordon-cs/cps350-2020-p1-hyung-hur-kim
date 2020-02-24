@@ -6,7 +6,7 @@ export default async function getWeatherApi() {
 	let response, responseJson;
     try {
       response = await fetch(darkskyURL + "/" + ApiKey + "/" + latLon);
-	  responseJson = await response.json();
+    responseJson = await response.json();
     } catch (error) {
       return error;
 	}

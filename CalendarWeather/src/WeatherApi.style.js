@@ -38,11 +38,12 @@ const width = '100%';
 		backgroundColor: 'white',
 		},
 	box2_2: {
+		flex: 1,
 		width: '100%',
 		height: '48%',
-		flexDirection: 'column',
+		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'flex-end',
+		justifyContent: 'center',
 		backgroundColor: 'white',
 		},
 	geoLoc: {
@@ -55,8 +56,9 @@ const width = '100%';
 		alignSelf: 'center',
 		},
 	summary: {
-		fontSize: 20,
+		fontSize: 15,
 		alignSelf: 'center',
+		flexWrap: 'wrap'
 	},
 	tempHighLow: {
 		fontSize: 30,
