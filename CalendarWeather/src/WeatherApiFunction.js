@@ -19,7 +19,5 @@ export default async function getWeatherApi(tempScale) {
     } catch (error) {
       return error; }
   }
-  
-  console.log(responseJson);
 	return responseJson;
   }

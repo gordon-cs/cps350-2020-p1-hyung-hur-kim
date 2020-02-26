@@ -26,6 +26,6 @@ export default LocationPicker;
 
 const styles = StyleSheet.create({
     geoLocPicker: {
-		fontSize: 20,
+		fontSize: 15,
 	},
 })

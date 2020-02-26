@@ -8,27 +8,43 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Switch
+  Switch,
+  Image
 } from 'react-native';
 import { format } from "date-fns"; // Changes date format
 
-import styles from './WeatherApi.style'
 import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
-import getWeatherApiTMR from './WeatherApiTMR';
 import LocationPicker from './DropdownLocationPicker';
+import CalendarStrip from 'react-native-calendar-strip';
+import EventPicker from './EventPicker'
+import WeatherIconUnderDates from './WeatherIconUnderDates'
+
 
 /* WeatherData gets weather data and renders a view of the weather.
  * (Currently it "gets" static data: a fake temperature.)
  * It will eventually use data from the Dark Sky API (http://darksky.net).
  */
+
+let clearDay = require('./weather-icons_clear-day-2.png');
+let clearNight = require('./weather-icons_clear-night-2.png');
+let cloudy = require('./weather-icons_cloudy-2.png');
+let fog = require('./weather-icons_fog-2.png');
+let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
+let rain = require('./weather-icons_rain-2.png');
+let sleet = require('./weather-icons_sleet-2.png');
+let snow = require('./weather-icons_snow-2.png');
+let thunderstorm = require('./weather-icons_thunderstorm-2.png');
+let wind = require('./weather-icons_wind-2.png');
+
 class WeatherData extends Component {
 	constructor(props) {
 		super(props);        // Always do this first, to make props valid
 		this.state = {       // Initialize state (don't call setState in ctor)
 		isLoading: true,
 		tempScale : "F",
-		selectedDate : this.props.currentDate,
+		selectedDate : this.props.currentSelectedDate,
 		// unit: "us", Troubleshooting: remove later
 		}
 		// Set up methods by binding this for them
@@ -45,7 +61,6 @@ class WeatherData extends Component {
 	async componentDidMount() {
 		let tempScale = "C";
 		let weatherData = await getWeatherApi(tempScale);
-		let weatherTimeMachine = await getWeatherApiTMR();
 		//let weatherDataSI = await getWeatherApiSI();
 		
 		if (weatherData.flags.units == "us") {
@@ -53,45 +68,107 @@ class WeatherData extends Component {
 		}
 		
 		this.setState({
-			isLoading: false,
 			weatherData: weatherData,
-			weatherTimeMachine: weatherTimeMachine,
 			tempScale: tempScale,
+			isLoading: false,
 		});
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		console.log("receiving");
 		// Any time props.email changes, update state.
-		if (nextProps.currentDate !== this.props.currentDate)
+		if (nextProps.currentSelectedDate !== this.props.currentSelectedDate)
 		this.setState({
-			selectedDate: nextProps.currentDate,
+			selectedDate: nextProps.currentSelectedDate,
 		});
 	}
 	
-	async changeScaleToF(){
+	async changeScaleToF()
+	{
+		let temp = "F";
+		let tempWeatherDate = await getWeatherApi(temp);
 		this.setState({
-			tempScale: "F"
-			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
-
+			weatherData: tempWeatherDate,
+			tempScale: temp
+		});
 	}
 
 	async changeScaleToC() {
+		let temp = "C";
+		let tempWeatherDate = await getWeatherApi(temp);
 		this.setState({
-			tempScale: "C"
-			}, async() => { this.setState({ weatherData: await getWeatherApi(this.state.tempScale) })});
+			weatherData: tempWeatherDate,
+			tempScale: temp
+		});
 	}
+
+	findTodayIcon(icon)
+	{
+		let useIcon;
+
+		if(icon == "clear-day")
+		{
+			icon = clearDay;
+		}
+		if(icon == "sleet")
+		{
+			icon = sleet;
+		}
+		if(icon == "thunderstorm")
+		{
+			icon = thunderstorm;
+		}
+		else if(icon == "fog")
+		{
+			icon = fog;
+		}
+		else if(icon == "wind")
+		{
+			icon = wind;
+		}
+		else if(icon == "rain")
+        {
+          useIcon = rain;
+        }
+        else if (icon == "partly-cloudy-day")
+        {
+          useIcon = partlyCloudyDay;
+        }
+        else if (icon == 'snow')
+        {
+          useIcon = snow;
+        }
+        else if (icon == 'clear-night')
+        {
+          useIcon = clearNight;
+        }
+        else if (icon == 'partly-cloudy-night')
+        {
+          useIcon = partlyCloudyNight;
+        }
+        else if (icon == 'cloudy')
+        {
+          useIcon = cloudy;
+		}
+		return useIcon;
+	}
+
+	changeBackground() {
+		return ({
+			backgroundColor: "white"
+		});
+	}
+
   	render() {
 
     if (this.state.isLoading) {
       // No data, show something in the meantime
       return (
-        <Text>Waiting for data ...
+        <Text style={{color: "#C9C9C9", fontStyle: "Quicksand"}}>Waiting for data ...
         </Text>
       );
     } else {
       
-    let averageTemp;
+    	let averageTemp;
 		let lowTemp;
 		let highTemp;
 		let feelsLike;
@@ -100,21 +177,23 @@ class WeatherData extends Component {
 		let summary;
 		let dateString;
 		let selectedDate = new Date(this.state.selectedDate).getDate();
-		let currentDate = new Date(moment()).getDate();
-		let index = selectedDate - currentDate;
-		let date = currentDate;
+		let currentSelectedDate = new Date(moment()).getDate();
+		let index = selectedDate - currentSelectedDate;
+		let date = currentSelectedDate;
 		let sunrise;
 		let sunset;
+		let icon;
     if(index === 0)
 		{
+			icon = this.findTodayIcon(this.state.weatherData.currently.icon);
 			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
-			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed()) + " \u00B0" + this.state.tempScale;
 			feelsLike = Number((this.state.weatherData.currently.apparentTemperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			range = lowTemp + " \u00B0" + this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
 			dateString = Date(this.state.weatherData.currently.time).toString();
 			date = new Date(dateString);
-			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			time = format(date, "MMM do, yyyy");
 			summary = this.state.weatherData.currently.summary;
 			sunrise = format(new Date(this.state.weatherData.daily.data[0].sunriseTime*1000), "h:mm a");
 			sunset = format(new Date(this.state.weatherData.daily.data[0].sunsetTime*1000), "h:mm a");
@@ -122,14 +201,15 @@ class WeatherData extends Component {
 
 		else
 		{
+			icon = this.findTodayIcon(this.state.weatherData.daily.data[index].icon);
 			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
-			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed());
+			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed()) + " \u00B0" + this.state.tempScale;
 			feelsLike = Number((this.state.weatherData.daily.data[index].apparentTemperatureHigh + this.state.weatherData.daily.data[index].apparentTemperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
 			range = lowTemp + " \u00B0" +this.state.tempScale + " / " + highTemp + " \u00B0" + this.state.tempScale;
 			dateString = Date(this.state.weatherData.daily.data[index].time);
 			date = new Date(this.state.weatherData.daily.data[index].time*1000);
-			time = format(date, "EEE, MMM do, yyyy h:mm a");
+			time = format(date, "MMM do, yyyy");
 			summary = this.state.weatherData.daily.data[index].summary;
 			sunrise = format(new Date(this.state.weatherData.daily.data[index].sunriseTime*1000), "h:mm a");
 			sunset = format(new Date(this.state.weatherData.daily.data[index].sunsetTime*1000), "h:mm a");
@@ -140,52 +220,53 @@ class WeatherData extends Component {
 		//var formattedSunset = format(sunset, "h:mm a");
     
       	return (
-        	<View style={styles.screen}>
-				<View style={styles.box1} >
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-						<LocationPicker></LocationPicker>
-						<TouchableOpacity onPress={()=>this.changeScaleToC()}>
-							<Text style={{fontSize: 20}}>C</Text>
-    					</TouchableOpacity>
-						<TouchableOpacity onPress={()=>this.changeScaleToF()}>
-							<Text style={{fontSize: 20}}>F</Text>
-    					</TouchableOpacity>			
-					</View>
-					<Text>{time}</Text>
-					<Text style={styles.curTemp}>
-						{averageTemp}
-					</Text>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-						<Text style={styles.summary}>
-							{summary}
-						</Text>
-						<Text style={styles.feelsLike}>
-							Feels like {feelsLike}
-						</Text>
-					</View>
-				</View>
-				<View style={styles.box2} >
-					<View style={styles.box2_1}>
-						<Text>
-							Today
-						</Text>
-						<Text style={styles.tempHighLow}>{range}</Text>
-					</View>
-					<View style={styles.box2_2}>
-						<View style={{flexDirection: "column", marginRight: "15%"}}>
-							<Text style={{fontSize: 20}}>Sunrise</Text>
-							<Text>{sunrise}</Text>
-						</View>
-						<View style={{flexDirection: "column",}}>
-							<Text style={{fontSize: 20}}>Sunset</Text>
-							<Text>{sunset}</Text>
-						</View>
-					</View>
-				</View>
+		<View style={{flex: 1, backgroundColor: '#101432', }}>
+			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
+					<Text style={{color: "#C9C9C9", fontSize: 20, mmarginLeft: 10, marginRight: 10}}>C{" \u00B0"}</Text>
+				</TouchableOpacity>
+				<Text style={{color: "#C9C9C9", fontSize: 20}}>/</Text>
+				<TouchableOpacity onPress={()=> this.changeScaleToF()}>
+					<Text style={{color: "#C9C9C9", fontSize: 20, marginLeft: 10, marginRight: 10} }>F{" \u00B0"}</Text>
+				</TouchableOpacity>
 			</View>
+			
+			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column"}}>
+				<Image source={icon} style={{ height: "30%", width: "30%"}}/>
+		  		<Text style = {{fontSize: 50, color: "#C9C9C9"}}>{averageTemp}</Text>
+				<Text style={{color: "#C9C9C9"}}>{time}</Text>
+		  		<Text style = {{color: "#C9C9C9"}}>{lowTemp} / {highTemp}</Text>
+			</View>
+			<View style={{flex: 2}}>
+        	<CalendarStrip
+				style={{ height: 100, paddingTop: 20, paddingBottom: 10}}
+				calendarHeaderStyle={{ color: '#C9C9C9' }}
+				calendarColor={"#101432"}
+				dateNumberStyle={{ color: "#606060" }}
+				dateNameStyle={{ color: "#606060"}}
+				highlightDateNumberStyle={{ color: "#C9C9C9" }}
+				highlightDateNameStyle={{ color: "#C9C9C9"}}
+				iconContainer={{ flex: 0.1 }}
+				useIsoWeekday = {false}
+				startingDate = {new Date()}
+				onDateSelected = {(newDate) => this.setState({selectedDate: new Date(newDate)})}
+				leftSelector = {[]}
+				rightSelector = {[]}
+
+
+
+
+			/>
+			<WeatherIconUnderDates currentSelectedDate = {this.state.selectedDate}></WeatherIconUnderDates>
+			<EventPicker currentSelectedDate = {this.state.selectedDate} tempScale = {this.state.tempScale}></EventPicker>
+			</View>
+		</View>
         );
     }
 }
 }
+
+
+
 
 export default WeatherData;
