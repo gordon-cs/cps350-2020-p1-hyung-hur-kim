@@ -2,14 +2,17 @@ import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, Image } from 'react-native';
 import getWeatherApi from './WeatherApiFunction';
 
-let sunny = require('./clear-day.png');
-let rainy = require('./rain.png');
-let cloudy = require('./cloudy.png');
-let partlyCloudyDay = require('./partly-cloudy-day.png');
-let snow = require('./snow.png');
-let clearNight = require('./clear-night.png');
-let partlyCloudyNight = require('./partly-cloudy-night.png');
-import moment from "moment";
+let clearDay = require('./weather-icons_clear-day-2.png');
+let clearNight = require('./weather-icons_clear-night-2.png');
+let cloudy = require('./weather-icons_cloudy-2.png');
+let fog = require('./weather-icons_fog-2.png');
+let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
+let rain = require('./weather-icons_rain-2.png');
+let sleet = require('./weather-icons_sleet-2.png');
+let snow = require('./weather-icons_snow-2.png');
+let thunderstorm = require('./weather-icons_thunderstorm-2.png');
+let wind = require('./weather-icons_wind-2.png');
 
 export default class WeatherIconUnderDates extends React.Component {
   constructor(props) {
@@ -23,7 +26,7 @@ export default class WeatherIconUnderDates extends React.Component {
         {image:""},
         {image:""},
         {image:""},],
-        selectedDate: this.props.currentDate,
+        selectedDate: this.props.currentSelectedDate,
       };
   }
 
@@ -41,11 +44,27 @@ export default class WeatherIconUnderDates extends React.Component {
     for(let i=0; i< 7; i++)
     {
         let icon = this.state.weatherData.daily.data[i].icon;
-        let useIcon = sunny;
+        let useIcon = clearDay;
 
-        if(icon == "rain")
+		    if(icon == "sleet")
+		    {
+		    	icon = sleet;
+		    }
+		    if(icon == "thunderstorm")
+		    {
+		    	icon = thunderstorm;
+		    }
+		    else if(icon == "fog")
+		    {
+		    	icon = fog;
+		    }
+		    else if(icon == "wind")
+		    {
+		    	icon = wind;
+		    }
+		    else if(icon == "rain")
         {
-          useIcon = rainy;
+          useIcon = rain;
         }
         else if (icon == "partly-cloudy-day")
         {
@@ -66,7 +85,7 @@ export default class WeatherIconUnderDates extends React.Component {
         else if (icon == 'cloudy')
         {
           useIcon = cloudy;
-        }
+		}
         arrayOfIcons[i].image = useIcon;
     }
     this.setState({WeatherIcons: arrayOfIcons});

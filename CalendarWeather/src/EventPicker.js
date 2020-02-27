@@ -8,22 +8,25 @@ import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import moment from "moment";
 import { format } from "date-fns";
 
-let { width } = Dimensions.get('window');
 RNCalendarEvents.authorizationStatus().then(response => {
-  if(response !== "authorized")
+  if(response === "authorized")
   {
     RNCalendarEvents.authorizeEventStore();
     calendars = RNCalendarEvents.findCalendars();
   }
 });
 
-let sunny = require('./clear-day.png');
-let rainy = require('./rain.png');
-let cloudy = require('./cloudy.png');
-let partlyCloudyDay = require('./partly-cloudy-day.png');
-let snow = require('./snow.png');
-let clearNight = require('./clear-night.png');
-let partlyCloudyNight = require('./partly-cloudy-night.png');
+let clearDay = require('./weather-icons_clear-day-2.png');
+let clearNight = require('./weather-icons_clear-night-2.png');
+let cloudy = require('./weather-icons_cloudy-2.png');
+let fog = require('./weather-icons_fog-2.png');
+let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
+let rain = require('./weather-icons_rain-2.png');
+let sleet = require('./weather-icons_sleet-2.png');
+let snow = require('./weather-icons_snow-2.png');
+let thunderstorm = require('./weather-icons_thunderstorm-2.png');
+let wind = require('./weather-icons_wind-2.png');
 
 let calendars = [];
   
@@ -48,7 +51,7 @@ export default class EventPicker extends React.Component {
       { id: '22', value: '10 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '23', value: '11 PM' , event: [] , icon: "", temp: "", eventID: ""},
       { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""}],
       allCalendars: [],
-      currentSelectedDate: this.props.currentDate,
+      currentSelectedDate: this.props.currentSelectedDate,
       allEvents: [{
 
       }],
@@ -58,7 +61,7 @@ export default class EventPicker extends React.Component {
         "icon": "",
         "data": [{
             "icon": "",}]}},
-      tempScale: "F"
+      tempScale: this.props.tempScale,
 
     };
   }
@@ -70,30 +73,52 @@ export default class EventPicker extends React.Component {
     const latLon = "42.589611,-70.819806";
 
     try {
+
       let date = moment(this.state.currentSelectedDate).format("YYYY-MM-DD[T]00:00:00");
-      let futureResponse = await fetch(darkskyURL + "/" + ApiKey + "/" + latLon  + "," + date+"?exclude=currently");
-      let futureResponseJson = await futureResponse.json();
-      let tempScale = "C";
-      if (futureResponseJson.flags.units == "us") {
-        tempScale = "F";
-      } 
-      this.setState({
-        futureWeatherData: futureResponseJson,
-        tempScale: tempScale,
-      });
 
-    
+      let response, responseJson;
+      if (this.state.tempScale == "F") {
+        try {
+          response = await fetch(darkskyURL + "/" + ApiKey + "/" + latLon + "," + date+ "?exclude=currently");
+          responseJson = await response.json();
+        } catch (error) {
+            return error; }
+      } else {
+        try {
+          response = await fetch(darkskyURL + "/" + ApiKey + "/" + latLon + "," + date+ "?units=si");
+	        responseJson = await response.json();
+        } catch (error) {
+          return error; }
+      }
+
+      this.setState({futureWeatherData: responseJson});
+
       let list = this.state.FlatListItems;
-
       for(let hour=0; hour<24; hour++)
       {
         let icon = this.state.futureWeatherData.hourly.data[hour].icon;
         let temperature = Math.round(this.state.futureWeatherData.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
-        let useIcon = sunny;
+        let useIcon = clearDay;
 
-        if(icon == "rain")
+		    if(icon == "sleet")
+		    {
+		    	icon = sleet;
+		    }
+		    if(icon == "thunderstorm")
+		    {
+		    	icon = thunderstorm;
+		    }
+		    else if(icon == "fog")
+		    {
+		    	icon = fog;
+		    }
+		    else if(icon == "wind")
+		    {
+		    	icon = wind;
+		    }
+		    else if(icon == "rain")
         {
-          useIcon = rainy;
+          useIcon = rain;
         }
         else if (icon == "partly-cloudy-day")
         {
@@ -115,7 +140,6 @@ export default class EventPicker extends React.Component {
         {
           useIcon = cloudy;
         }
-  
         if(hour >=0 && hour <=5)
         {
           list[hour].icon = useIcon;
@@ -146,10 +170,14 @@ export default class EventPicker extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     // Any time props.email changes, update state.
-    if (nextProps.currentDate !== this.props.currentDate)
+    if (nextProps.currentSelectedDate !== this.props.currentSelectedDate)
       this.setState({
-        currentSelectedDate: nextProps.currentDate,
+        currentSelectedDate: nextProps.currentSelectedDate,
       }, () => {this.fetchAllEvents()});
+    if(nextProps.tempScale !== this.props.tempScale)
+      this.setState({
+        tempScale: nextProps.tempScale
+      }, () => {this.getWeatherApi()});
       
     }
   
@@ -192,21 +220,22 @@ componentDidMount() {
   fetchAllEvents = async () => {
     this.resetFlatList();
     let allEvents = {};
+    
     try {
       allEvents = await RNCalendarEvents.fetchAllEvents(
-        (moment(this.state.currentSelectedDate)).format("YYYY-MM-DD[T]00:00:00.000[Z]"),
-        (moment(this.state.currentSelectedDate)).add(1, 'day').format("YYYY-MM-DD[T]00:00:00.000[Z]"),
+        (new Date(moment(this.state.currentSelectedDate).format('YYYY-MM-DDT00:00:00.000Z'))).toISOString(),
+        (new Date(moment(this.state.currentSelectedDate).add(1, 'day').format('YYYY-MM-DDT00:00:00.000Z'))).toISOString()
       );
     } catch (error) {
       Alert.alert("Failed to get events");
     }
     let list = this.state.FlatListItems;
-    
-    
+    //console.log(allEvents);
     for(let i=0; i< allEvents.length; i++)
       {
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
+        console.log(hour);
         let endDate = moment(allEvents[i].endDate);
         
         if(allEvents[i].allDay)
@@ -218,6 +247,7 @@ componentDidMount() {
           list[hour].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location, allEvents[i].id]
         }
       }
+      
       this.setState({FlatListItems: list});
       this.getWeatherApi();
   };
@@ -239,11 +269,8 @@ componentDidMount() {
           startDate: newTime,
         };
         AddCalendarEvent.presentEventCreatingDialog(eventConfig).then((eventInfo) => {
-        
-        if(eventInfo.action === "SAVED")
-        {
           this.fetchAllEvents();
-        }
+
       })
       .catch((error) => {
         // handle error such as when user rejected permissions
@@ -286,19 +313,19 @@ componentDidMount() {
 
           if(item.event[0] != undefined)
           {
-            time = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>
+            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>
               {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
             if(item.event[2] != undefined)
             {
-                title = (<Text style = {{color: '#615B73', fontWeight: '600', minHeight: 15}}>{item.event[2]}</Text>);
+                title = (<Text style = {{color: "white", fontWeight: '600', minHeight: 15, fontSize: 18}}>{item.event[2]}</Text>);
             }
             if(item.event[3] != "")
             {
-              location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: '#615B73', flexWrap: 'wrap'}}>{item.event[3]}</Text>);
+              location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: "white", flexWrap: 'wrap'}}>{item.event[3]}</Text>);
             }
 
             view = (
-              <View  style={{justifyContent: "flex-start", backgroundColor:'#dcdcdc', border: 0, }}>
+              <View  style={{justifyContent: "flex-start", backgroundColor:'#313241', border: 0,}}>
                 {title}
                 {location}
                 {time}
@@ -309,13 +336,9 @@ componentDidMount() {
           else 
           {
             view = (<View  style={{justifyContent: "flex-start", border: 0}}>
-              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "lightgrey"}}>+</Text>
+              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9"}}>+</Text>
             </View>);
           }
-
-          
-
-          
           return (          
           <View style = {styles.container}>
             <TouchableOpacity style = {styles.list}>
@@ -327,7 +350,7 @@ componentDidMount() {
               </View>
               <View style={{flex: 1, flexDirection: "row"}}>
                 <Image source={item.icon} style={{height: 50, width: 50}} />
-                <Text style={{padding: 10,fontSize: 15,height: 44,}}>{item.temp}</Text>
+                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9"}}>{item.temp}</Text>
               </View>
               <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
                 {view}
@@ -347,7 +370,7 @@ componentDidMount() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#313241',
     padding: 8,
   },
   MainContainer: {
@@ -356,22 +379,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 30,
   },
-
-
   list: {
     flexDirection: 'row',
-
   },
-
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
+    color: "#C9C9C9"
   },
 
   event: {
     padding: 10,
     fontSize: 18,
     height: 44,
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+
   }});
