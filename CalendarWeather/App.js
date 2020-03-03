@@ -10,18 +10,12 @@ import WeatherNow from './src/WeatherNow';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-		  currentSelectedDate: new Date(),
-		  currentDate: new Date()
-	  }
   }
   render() {
-  
     return (
       <View style={{ flex: 1}}>
-        <WeatherNow currentSelectedDate = {this.state.currentSelectedDate}></WeatherNow>
+        <WeatherNow></WeatherNow>
       </View>
-
     );
   }
 }

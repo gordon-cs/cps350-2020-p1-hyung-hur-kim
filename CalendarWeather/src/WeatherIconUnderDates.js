@@ -113,14 +113,13 @@ export default class WeatherIconUnderDates extends React.Component {
 
 const styles = StyleSheet.create({
   MainContainer: {
-    paddingLeft: 36,
     marginBottom: 5,
     marginTop: 1,
+    justifyContent: 'space-evenly'
 },
 
   item: {
-    //justifyContent: 'space-evenly',
-    marginRight: 6.8,
+    marginHorizontal: 8,
     width: 40,
     height: 40,
   },
