@@ -8,6 +8,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Switch,
   Image
 } from 'react-native';
 import { format } from "date-fns"; // Changes date format
@@ -43,7 +44,9 @@ class WeatherData extends Component {
 		this.state = {       // Initialize state (don't call setState in ctor)
 		isLoading: true,
 		tempScale : "F",
-		selectedDate : this.props.currentSelectedDate,
+		selectedDate : new Date(),
+		FColor: "#C9C9C9", 
+		CColor: "#606060",
 		// unit: "us", Troubleshooting: remove later
 		}
 		// Set up methods by binding this for them
@@ -58,7 +61,7 @@ class WeatherData extends Component {
 	* Todo: move API key to a file not in repo.
 	*/
 	async componentDidMount() {
-		let tempScale = "C";
+		let tempScale = "F";
 		let weatherData = await getWeatherApi(tempScale);
 		//let weatherDataSI = await getWeatherApiSI();
 		
@@ -87,7 +90,9 @@ class WeatherData extends Component {
 		let tempWeatherDate = await getWeatherApi(temp);
 		this.setState({
 			weatherData: tempWeatherDate,
-			tempScale: temp
+			tempScale: temp,
+			FColor: "#C9C9C9", 
+			CColor: "#606060",
 		});
 	}
 
@@ -96,7 +101,9 @@ class WeatherData extends Component {
 		let tempWeatherDate = await getWeatherApi(temp);
 		this.setState({
 			weatherData: tempWeatherDate,
-			tempScale: temp
+			tempScale: temp,
+			FColor: "#606060", 
+			CColor: "#C9C9C9",
 		});
 	}
 
@@ -162,7 +169,7 @@ class WeatherData extends Component {
     if (this.state.isLoading) {
       // No data, show something in the meantime
       return (
-        <Text style={{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>Waiting for data ...
+        <Text style={{color: "#C9C9C9", fontStyle: "Quicksand"}}>Waiting for data ...
         </Text>
       );
     } else {
@@ -219,37 +226,48 @@ class WeatherData extends Component {
 		//var formattedSunset = format(sunset, "h:mm a");
     
       	return (
-		<View style={{flex: 1, backgroundColor: '#101432'}}>
-			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+		<View style={{flex: 1, backgroundColor: '#101432', }}>
+			<View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
 				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
-					<Text style={{color: "#C9C9C9", fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
+					<Text style={{color: this.state.CColor, fontSize: 20, mmarginLeft: 10, marginRight: 10}}>C{" \u00B0"}</Text>
 				</TouchableOpacity>
-				<Text style={{color: "#C9C9C9", fontSize: 20, fontFamily: "Quicksand-Light"}}>/</Text>
+				<Text style={{color: "#606060", fontSize: 20}}>/</Text>
 				<TouchableOpacity onPress={()=> this.changeScaleToF()}>
-					<Text style={{color: "#C9C9C9", fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"} }>F{" \u00B0"}</Text>
+					<Text style={{color: this.state.FColor, fontSize: 20, marginLeft: 10, marginRight: 10} }>F{" \u00B0"}</Text>
 				</TouchableOpacity>
 			</View>
 			
-			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column"}}>
-				<Image source={icon} style={{ height: "30%", width: "30%"}}/>
-		  		<Text style = {{fontSize: 50, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{averageTemp}</Text>
-				<Text style={{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{time}</Text>
-		  		<Text style = {{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{lowTemp} / {highTemp}</Text>
+			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column", paddingBottom: 10,}}>
+				<Image source={icon} style={{ height: 100, width: 100, paddingBottom: 0}}/>
+		  		<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
+				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
+					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
+						<Image source={require('./sunrise.png')} style={{ height: 80, width: 80, marginRight: 70}}/>
+		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 20}}>{sunrise}</Text>
+					</View>
+					<View style={{flexDirection: 'column', alignItems: 'center'}}>
+						<Text style={{color: "#C9C9C9",}}>{time}</Text>
+						<Text style = {{color: "#C9C9C9", marginTop: 5}}>{lowTemp} / {highTemp}</Text>
+					</View>
+					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
+						<Image source={require('./sunset.png')} style={{ height: 80, width: 80, marginLeft: 70}}/>
+		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90}}>{sunset}</Text>
+					</View>
+				</View>
 			</View>
-			<View style={{flex: 2}}>
+			<View style={{flex: 2.5}}>
         	<CalendarStrip
-				style={{ height: 100, paddingTop: 20, paddingBottom: 10, fontFamily: "Quicksand-Light"}}
-				calendarHeaderStyle={{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}
+				style={{ height: 100, paddingBottom: 10}}
+				calendarHeaderStyle={{ color: '#C9C9C9' , marginBottom: 10}}
 				calendarColor={"#101432"}
-				dateNumberStyle={{ color: "#606060", fontFamily: "Quicksand-Light" }}
-				dateNameStyle={{ color: "#606060", fontFamily: "Quicksand-Light"}}
-				highlightDateNumberStyle={{ color: "#C9C9C9", fontFamily: "Quicksand-Light"}}
-				highlightDateNameStyle={{ color: "#C9C9C9", fontFamily: "Quicksand-Light"}}
-				iconContainer={{ flex: 0.1 }}
+				dateNumberStyle={{ color: "#606060" }}
+				dateNameStyle={{ color: "#606060"}}
+				highlightDateNumberStyle={{ color: "#C9C9C9" }}
+				highlightDateNameStyle={{ color: "#C9C9C9"}}
+				iconContainer={{ justifyContent: 'space-between'}}
 				useIsoWeekday = {false}
 				startingDate = {new Date()}
 				onDateSelected = {(newDate) => this.setState({selectedDate: new Date(newDate)})}
-				styleWeekend = {false}
 				leftSelector = {[]}
 				rightSelector = {[]}
 
