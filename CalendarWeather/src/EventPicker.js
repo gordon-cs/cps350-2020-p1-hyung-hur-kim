@@ -16,17 +16,17 @@ RNCalendarEvents.authorizationStatus().then(response => {
   }
 });
 
-let clearDay = require('./weather-icons_clear-day-2.png');
-let clearNight = require('./weather-icons_clear-night-2.png');
-let cloudy = require('./weather-icons_cloudy-2.png');
-let fog = require('./weather-icons_fog-2.png');
-let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
-let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
-let rain = require('./weather-icons_rain-2.png');
-let sleet = require('./weather-icons_sleet-2.png');
-let snow = require('./weather-icons_snow-2.png');
-let thunderstorm = require('./weather-icons_thunderstorm-2.png');
-let wind = require('./weather-icons_wind-2.png');
+let clearDay = require('./Images/weather-icons_clear-day-2.png');
+let clearNight = require('./Images/weather-icons_clear-night-2.png');
+let cloudy = require('./Images/weather-icons_cloudy-2.png');
+let fog = require('./Images/weather-icons_fog-2.png');
+let partlyCloudyDay = require('./Images/weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./Images/weather-icons_partly-cloudy-night-2.png');
+let rain = require('./Images/weather-icons_rain-2.png');
+let sleet = require('./Images/weather-icons_sleet-2.png');
+let snow = require('./Images/weather-icons_snow-2.png');
+let thunderstorm = require('./Images/weather-icons_thunderstorm-2.png');
+let wind = require('./Images/weather-icons_wind-2.png');
 
 let calendars = [];
   
@@ -230,12 +230,10 @@ componentDidMount() {
       Alert.alert("Failed to get events");
     }
     let list = this.state.FlatListItems;
-    //console.log(allEvents);
     for(let i=0; i< allEvents.length; i++)
       {
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
-        let endDate = moment(allEvents[i].endDate);
         
         if(allEvents[i].allDay)
         {

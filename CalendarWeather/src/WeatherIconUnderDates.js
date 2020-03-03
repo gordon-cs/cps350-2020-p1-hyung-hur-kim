@@ -2,17 +2,17 @@ import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, Image } from 'react-native';
 import getWeatherApi from './WeatherApiFunction';
 
-let clearDay = require('./weather-icons_clear-day-2.png');
-let clearNight = require('./weather-icons_clear-night-2.png');
-let cloudy = require('./weather-icons_cloudy-2.png');
-let fog = require('./weather-icons_fog-2.png');
-let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
-let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
-let rain = require('./weather-icons_rain-2.png');
-let sleet = require('./weather-icons_sleet-2.png');
-let snow = require('./weather-icons_snow-2.png');
-let thunderstorm = require('./weather-icons_thunderstorm-2.png');
-let wind = require('./weather-icons_wind-2.png');
+let clearDay = require('./Images/weather-icons_clear-day-2.png');
+let clearNight = require('./Images/weather-icons_clear-night-2.png');
+let cloudy = require('./Images/weather-icons_cloudy-2.png');
+let fog = require('./Images/weather-icons_fog-2.png');
+let partlyCloudyDay = require('./Images/weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./Images/weather-icons_partly-cloudy-night-2.png');
+let rain = require('./Images/weather-icons_rain-2.png');
+let sleet = require('./Images/weather-icons_sleet-2.png');
+let snow = require('./Images/weather-icons_snow-2.png');
+let thunderstorm = require('./Images/weather-icons_thunderstorm-2.png');
+let wind = require('./Images/weather-icons_wind-2.png');
 
 export default class WeatherIconUnderDates extends React.Component {
   constructor(props) {
@@ -85,7 +85,7 @@ export default class WeatherIconUnderDates extends React.Component {
         else if (icon == 'cloudy')
         {
           useIcon = cloudy;
-		}
+    }
         arrayOfIcons[i].image = useIcon;
     }
     this.setState({WeatherIcons: arrayOfIcons});

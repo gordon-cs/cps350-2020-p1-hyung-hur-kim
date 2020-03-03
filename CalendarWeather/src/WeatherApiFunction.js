@@ -19,6 +19,5 @@ export default async function getWeatherApi(tempScale) {
     } catch (error) {
       return error; }
   }
-  console.log(responseJson.daily.data[6].icon);
 	return responseJson;
   }

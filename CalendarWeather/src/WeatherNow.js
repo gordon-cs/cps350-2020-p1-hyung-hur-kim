@@ -3,22 +3,23 @@
  *
  */
 
-import React, { Component } from 'react';
+import React, { PureComponent} from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   Switch,
-  Image
+  Image,
+  StatusBar, SafeAreaView
 } from 'react-native';
 import { format } from "date-fns"; // Changes date format
 
 import moment from "moment";
 import getWeatherApi from './WeatherApiFunction';
-import LocationPicker from './DropdownLocationPicker';
 import CalendarStrip from 'react-native-calendar-strip';
 import EventPicker from './EventPicker'
-import WeatherIconUnderDates from './WeatherIconUnderDates'
+import WeatherIconUnderDates from './WeatherIconUnderDates';
+import SplashScreen from './SplashScreen';
 
 
 /* WeatherData gets weather data and renders a view of the weather.
@@ -26,27 +27,30 @@ import WeatherIconUnderDates from './WeatherIconUnderDates'
  * It will eventually use data from the Dark Sky API (http://darksky.net).
  */
 
-let clearDay = require('./weather-icons_clear-day-2.png');
-let clearNight = require('./weather-icons_clear-night-2.png');
-let cloudy = require('./weather-icons_cloudy-2.png');
-let fog = require('./weather-icons_fog-2.png');
-let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
-let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
-let rain = require('./weather-icons_rain-2.png');
-let sleet = require('./weather-icons_sleet-2.png');
-let snow = require('./weather-icons_snow-2.png');
-let thunderstorm = require('./weather-icons_thunderstorm-2.png');
-let wind = require('./weather-icons_wind-2.png');
+let clearDay = require('./Images/weather-icons_clear-day-2.png');
+let clearNight = require('./Images/weather-icons_clear-night-2.png');
+let cloudy = require('./Images/weather-icons_cloudy-2.png');
+let fog = require('./Images/weather-icons_fog-2.png');
+let partlyCloudyDay = require('./Images/weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./Images/weather-icons_partly-cloudy-night-2.png');
+let rain = require('./Images/weather-icons_rain-2.png');
+let sleet = require('./Images/weather-icons_sleet-2.png');
+let snow = require('./Images/weather-icons_snow-2.png');
+let thunderstorm = require('./Images/weather-icons_thunderstorm-2.png');
+let wind = require('./Images/weather-icons_wind-2.png');
+let sunriseImg = require('./Images/sunrise.png');
+let sunsetImg = require('./Images/sunset.png');
 
-class WeatherData extends Component {
+class WeatherData extends PureComponent {
 	constructor(props) {
 		super(props);        // Always do this first, to make props valid
 		this.state = {       // Initialize state (don't call setState in ctor)
-		isLoading: true,
 		tempScale : "F",
 		selectedDate : new Date(),
 		FColor: "#C9C9C9", 
 		CColor: "#606060",
+		showSplashScreen: true,
+      	isMounted: false,
 		// unit: "us", Troubleshooting: remove later
 		}
 		// Set up methods by binding this for them
@@ -61,6 +65,7 @@ class WeatherData extends Component {
 	* Todo: move API key to a file not in repo.
 	*/
 	async componentDidMount() {
+		
 		let tempScale = "F";
 		let weatherData = await getWeatherApi(tempScale);
 		//let weatherDataSI = await getWeatherApiSI();
@@ -69,12 +74,25 @@ class WeatherData extends Component {
 			tempScale = "F";
 		}
 		
+		this.setState({isMounted: true}, () => {
+			this.state.isMounted &&
+			  setTimeout(() => {
+				this.setState({showSplashScreen: false});
+			  }, 3000);
+		  });
+		
+
 		this.setState({
 			weatherData: weatherData,
 			tempScale: tempScale,
-			isLoading: false,
 		});
+
+		
 	}
+
+	componentWillUnmount() {
+		this.setState({isMounted: false});
+	  }
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
 		// Any time props.email changes, update state.
@@ -166,13 +184,18 @@ class WeatherData extends Component {
 
   	render() {
 
-    if (this.state.isLoading) {
-      // No data, show something in the meantime
-      return (
-        <Text style={{color: "#C9C9C9", fontStyle: "Quicksand"}}>Waiting for data ...
-        </Text>
-      );
-    } else {
+		if(this.state.showSplashScreen)
+		{
+			return (
+			<>
+			  <StatusBar hidden={true} />
+			  <SafeAreaView style={{height: '100%'}}>
+				<SplashScreen />
+			  </SafeAreaView>
+			</>
+			);
+		}
+    	else {
       
     	let averageTemp;
 		let lowTemp;
@@ -229,7 +252,7 @@ class WeatherData extends Component {
 		<View style={{flex: 1, backgroundColor: '#101432', }}>
 			<View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
 				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
-					<Text style={{color: this.state.CColor, fontSize: 20, mmarginLeft: 10, marginRight: 10}}>C{" \u00B0"}</Text>
+					<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10}}>C{" \u00B0"}</Text>
 				</TouchableOpacity>
 				<Text style={{color: "#606060", fontSize: 20}}>/</Text>
 				<TouchableOpacity onPress={()=> this.changeScaleToF()}>
@@ -242,7 +265,7 @@ class WeatherData extends Component {
 		  		<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
 				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
-						<Image source={require('./sunrise.png')} style={{ height: 80, width: 80, marginRight: 70}}/>
+						<Image source={sunriseImg} style={{ height: 80, width: 80, marginRight: 70}}/>
 		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 20}}>{sunrise}</Text>
 					</View>
 					<View style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -250,7 +273,7 @@ class WeatherData extends Component {
 						<Text style = {{color: "#C9C9C9", marginTop: 5}}>{lowTemp} / {highTemp}</Text>
 					</View>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
-						<Image source={require('./sunset.png')} style={{ height: 80, width: 80, marginLeft: 70}}/>
+						<Image source={sunsetImg} style={{ height: 80, width: 80, marginLeft: 70}}/>
 		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90}}>{sunset}</Text>
 					</View>
 				</View>
@@ -270,10 +293,6 @@ class WeatherData extends Component {
 				onDateSelected = {(newDate) => this.setState({selectedDate: new Date(newDate)})}
 				leftSelector = {[]}
 				rightSelector = {[]}
-
-
-
-
 			/>
 			<WeatherIconUnderDates currentSelectedDate = {this.state.selectedDate}></WeatherIconUnderDates>
 			<EventPicker currentSelectedDate = {this.state.selectedDate} tempScale = {this.state.tempScale}></EventPicker>
