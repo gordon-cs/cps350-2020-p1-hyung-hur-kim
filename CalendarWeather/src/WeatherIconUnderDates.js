@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   MainContainer: {
     marginBottom: 5,
     marginTop: 1,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
 },
 
   item: {
