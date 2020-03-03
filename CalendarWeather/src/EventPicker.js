@@ -338,7 +338,7 @@ componentDidMount() {
 
           if(item.event[0] != undefined)
           {
-            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>
+            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap', fontFamily: "Quicksand-Light"}}>
               {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
             if(item.event[2] != undefined)
             {
@@ -361,7 +361,7 @@ componentDidMount() {
           else 
           {
             view = (<View  style={{justifyContent: "flex-start", border: 0}}>
-              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9"}}>+</Text>
+              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>+</Text>
             </View>);
           }
           return (          
@@ -374,8 +374,8 @@ componentDidMount() {
                 </Text>
               </View>
               <View style={{flex: 1, flexDirection: "row"}}>
-                  <Image source={item.icon} style={{height: 50, width: 50}} />
-                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9"}}>{item.temp}</Text>
+                <Image source={item.icon} style={{height: 50, width: 50}} />
+                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{item.temp}</Text>
               </View>
               <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
                 {view}
@@ -395,10 +395,12 @@ componentDidMount() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    //fontFamily: "Quicksand-Light",
     backgroundColor: '#313241',
     padding: 8,
   },
   MainContainer: {
+    fontFamily: "Quicksand-Light",
     justifyContent: 'center',
     flex: 1,
     marginBottom: 10,
@@ -406,8 +408,10 @@ const styles = StyleSheet.create({
   },
   list: {
     flexDirection: 'row',
+    fontFamily: "Quicksand-Light",
   },
   item: {
+    fontFamily: "Quicksand-Light",
     padding: 10,
     fontSize: 18,
     height: 44,
@@ -415,6 +419,7 @@ const styles = StyleSheet.create({
   },
 
   event: {
+    fontFamily: "Quicksand-Light",
     padding: 10,
     fontSize: 18,
     height: 44,
