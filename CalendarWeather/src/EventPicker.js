@@ -235,7 +235,6 @@ componentDidMount() {
       {
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
-        console.log(hour);
         let endDate = moment(allEvents[i].endDate);
         
         if(allEvents[i].allDay)
@@ -304,6 +303,32 @@ componentDidMount() {
         //Item Separator View
         renderItem={({ item}) => 
         {
+
+          let styleOfValues;
+
+          if(item.value.length > 4)
+          {
+            styleOfValues = StyleSheet.create({
+              item: {
+                padding: 10,
+                fontSize: 18,
+                height: 44,
+                color: "#C9C9C9"
+              },
+              });
+          }
+          else
+          {
+            styleOfValues = StyleSheet.create({
+              item: {
+                padding: 10,
+                fontSize: 18,
+                height: 44,
+                color: "#C9C9C9",
+                marginLeft: 10
+              },
+              });
+          }
           let view;
           let withoutEventView;
 
@@ -344,7 +369,7 @@ componentDidMount() {
             <TouchableOpacity style = {styles.list}>
               <View>
                 <Text
-                  style={styles.item}>
+                  style={styleOfValues.item}>
                   {item.value}
                 </Text>
               </View>
@@ -390,7 +415,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
-    color: "#C9C9C9"
+    color: "#C9C9C9",
   },
 
   event: {
