@@ -434,12 +434,14 @@ const styles = StyleSheet.create({
     padding: 1,
     fontSize: 5,
     color: "#C9C9C9",
+    flex: 1,
   },
 
   darkskyattrib: {
     fontFamily: "Quicksand-Light",
     padding: 1,
-    fontSize: 13,
+    fontSize: 10,
     color: "white",
+    alignSelf: "center"
   }
 });
