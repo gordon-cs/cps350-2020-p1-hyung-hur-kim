@@ -51,6 +51,7 @@ class WeatherData extends Component {
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.changeScaleToC = this.changeScaleToC.bind(this);
 		this.changeScaleToF = this.changeScaleToF.bind(this);
+		this.getDeviceLocation = this.getDeviceLocation.bind(this);
 	}
 
 	/* Get real API data when component is first loaded.
@@ -103,7 +104,9 @@ class WeatherData extends Component {
 
 	async getLocation()
 	{
-		
+		this.setState({
+			devicelocation,
+		});
 	}
 
 	async changeScaleToC() {
