@@ -22,6 +22,7 @@
         "react-native-calendars": "^1.263.0",
         "react-native-dropdown": "0.0.6",
         "react-native-events-calendar": "^1.0.8",
+        "react-native-geolocation-service": "^4.0.0",
         "react-native-map-picker": "0.0.2",
         "react-native-modal-dropdown": "^0.7.0",
         "rnschedule": "0.0.5"
