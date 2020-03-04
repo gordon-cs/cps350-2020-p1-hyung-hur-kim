@@ -7,6 +7,7 @@ import RNCalendarEvents from "react-native-calendar-events";
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import moment from "moment";
 import { format } from "date-fns";
+import getDeviceLocation from './Geolocator';
 
 RNCalendarEvents.authorizationStatus().then(response => {
   if(response === "authorized")
@@ -70,7 +71,8 @@ export default class EventPicker extends React.Component {
 
     const darkskyURL = "https://api.darksky.net/forecast";
     const ApiKey = "7711c2819f294564cb912e166a5bb983";
-    const latLon = "42.589611,-70.819806";
+    let latLon = getDeviceLocation(this.updateLocation);
+    //const latLon = "42.589611,-70.819806";
       let date = moment(this.state.currentSelectedDate).format("YYYY-MM-DD[T]00:00:00");
 
       let response, responseJson;
@@ -87,6 +89,12 @@ export default class EventPicker extends React.Component {
         } catch (error) {
           return error; }
       }
+      updateLocation = latLon => {
+        this.setState({latLon});
+        this.setState({
+          isLoading: false,
+        });
+        };
 
       this.setState({futureWeatherData: responseJson});
       let list = this.state.FlatListItems;

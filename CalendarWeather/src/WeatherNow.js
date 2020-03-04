@@ -21,6 +21,7 @@ import EventPicker from './EventPicker'
 import WeatherIconUnderDates from './WeatherIconUnderDates';
 import SplashScreen from './SplashScreen';
 import getImageIcon from './ImageIconFunction';
+import getDeviceLocation from './Geolocator';
 
 
 /* WeatherData gets weather data and renders a view of the weather.
@@ -43,7 +44,10 @@ class WeatherData extends PureComponent {
 		showSplashScreen: true,
 		isMounted: false,
 		loading:true,
-		// unit: "us", Troubleshooting: remove later
+		isLoading: true,
+		location: null,
+		latlon: "0,0",
+		weatherData: null,
 		}
 		// Set up methods by binding this for them
 		this.componentDidMount = this.componentDidMount.bind(this);
@@ -59,7 +63,8 @@ class WeatherData extends PureComponent {
 	async componentDidMount() {
 		
 		let tempScale = "F";
-		let weatherData = await getWeatherApi(tempScale);
+		getDeviceLocation(this.updateLocation);
+		let weatherData = await getWeatherApi(tempScale, latLon);
 
 		let arrayOfIcons = [7];
 		for(let i=0; i< 7; i++)
@@ -87,6 +92,12 @@ class WeatherData extends PureComponent {
 			  }, 3000);
 		  });
 	}
+	updateLocation = latLon => {
+		this.setState({latLon});
+		this.setState({
+		  isLoading: false,
+		});
+	  };
 
 	componentWillUnmount() {
 		this.setState({isMounted: false});
@@ -103,10 +114,11 @@ class WeatherData extends PureComponent {
 	async changeScaleToF()
 	{
 		let temp = "F";
-		let tempWeatherDate = await getWeatherApi(temp);
+		let tempWeatherDate = await getWeatherApi(temp, coord);
 		this.setState({
 			weatherData: tempWeatherDate,
 			tempScale: temp,
+			latLon: coord,
 			FColor: "#C9C9C9", 
 			CColor: "#606060",
 		});
@@ -114,10 +126,11 @@ class WeatherData extends PureComponent {
 
 	async changeScaleToC() {
 		let temp = "C";
-		let tempWeatherDate = await getWeatherApi(temp);
+		let tempWeatherDate = await getWeatherApi(temp, coord);
 		this.setState({
 			weatherData: tempWeatherDate,
 			tempScale: temp,
+			latLon: coord,
 			FColor: "#606060", 
 			CColor: "#C9C9C9",
 		});
@@ -190,14 +203,19 @@ class WeatherData extends PureComponent {
     
       	return (
 		<View style={{flex: 1, backgroundColor: '#101432', }}>
-			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 20}}>
-				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
-					<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
+			<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+				<TouchableOpacity onPress={()=> this.getDeviceLocation()}>
+					<Text style={{color: this.state.CColor, fontSize: 20, marginTop: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>Location</Text>
 				</TouchableOpacity>
-				<Text style={{color: "#606060", fontSize: 20, fontFamily: "Quicksand-Light"}}>/</Text>
-				<TouchableOpacity onPress={()=> this.changeScaleToF()}>
-					<Text style={{color: this.state.FColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"} }>F{" \u00B0"}</Text>
-				</TouchableOpacity>
+				<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 20}}>
+					<TouchableOpacity onPress={()=> this.changeScaleToC()}>
+						<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
+					</TouchableOpacity>
+					<Text style={{color: "#606060", fontSize: 20, fontFamily: "Quicksand-Light"}}>/</Text>
+					<TouchableOpacity onPress={()=> this.changeScaleToF()}>
+						<Text style={{color: this.state.FColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"} }>F{" \u00B0"}</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 			
 			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column", paddingBottom: 10,}}>

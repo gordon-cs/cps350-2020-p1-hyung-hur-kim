@@ -16,16 +16,27 @@ export default class WeatherIconUnderDates extends React.Component {
         {image:""},
         {image:""},],
         selectedDate: this.props.currentSelectedDate,
+        latLon: "0.0",
+        isLoading: true,
       };
+      
   }
 
   async componentDidMount() {
-    let weatherData = await getWeatherApi("F");
+    latLon = getDeviceLocation(this.updateLocation);
+    let weatherData = await getWeatherApi("F", latLon);
     this.setState({
         weatherData: weatherData,
       });
     this.setIconsPerDay();
   }
+
+  updateLocation = latLon => {
+		this.setState({latLon});
+		this.setState({
+		  isLoading: false,
+		});
+	  };
 
   async setIconsPerDay() {
 
