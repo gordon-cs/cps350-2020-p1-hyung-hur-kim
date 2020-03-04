@@ -71,9 +71,6 @@ export default class EventPicker extends React.Component {
     const darkskyURL = "https://api.darksky.net/forecast";
     const ApiKey = "7711c2819f294564cb912e166a5bb983";
     const latLon = "42.589611,-70.819806";
-
-    try {
-
       let date = moment(this.state.currentSelectedDate).format("YYYY-MM-DD[T]00:00:00");
 
       let response, responseJson;
@@ -92,29 +89,29 @@ export default class EventPicker extends React.Component {
       }
 
       this.setState({futureWeatherData: responseJson});
-
       let list = this.state.FlatListItems;
+
       for(let hour=0; hour<24; hour++)
       {
         let icon = this.state.futureWeatherData.hourly.data[hour].icon;
-        let temperature = Math.round(this.state.futureWeatherData.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
+        let temperature = Math.round(responseJson.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
         let useIcon = clearDay;
 
 		    if(icon == "sleet")
 		    {
-		    	icon = sleet;
+		    	useIcon = sleet;
 		    }
 		    if(icon == "thunderstorm")
 		    {
-		    	icon = thunderstorm;
+		    	useIcon = thunderstorm;
 		    }
 		    else if(icon == "fog")
 		    {
-		    	icon = fog;
+		    	useIcon = fog;
 		    }
 		    else if(icon == "wind")
 		    {
-		    	icon = wind;
+		    	useIcon = wind;
 		    }
 		    else if(icon == "rain")
         {
@@ -153,10 +150,6 @@ export default class EventPicker extends React.Component {
       }
 
       this.setState({FlatListItems: list});
-      
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   FlatListItemSeparator = () => {

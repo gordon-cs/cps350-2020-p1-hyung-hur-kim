@@ -20,8 +20,4 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  bibleMe: {
-    alignSelf: 'center',
-    width: '85%',
-  },
 });

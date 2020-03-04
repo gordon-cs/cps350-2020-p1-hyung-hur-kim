@@ -20,26 +20,17 @@ import CalendarStrip from 'react-native-calendar-strip';
 import EventPicker from './EventPicker'
 import WeatherIconUnderDates from './WeatherIconUnderDates';
 import SplashScreen from './SplashScreen';
+import getImageIcon from './ImageIconFunction';
 
 
 /* WeatherData gets weather data and renders a view of the weather.
  * (Currently it "gets" static data: a fake temperature.)
  * It will eventually use data from the Dark Sky API (http://darksky.net).
  */
-
-let clearDay = require('./Images/weather-icons_clear-day-2.png');
-let clearNight = require('./Images/weather-icons_clear-night-2.png');
-let cloudy = require('./Images/weather-icons_cloudy-2.png');
-let fog = require('./Images/weather-icons_fog-2.png');
-let partlyCloudyDay = require('./Images/weather-icons_partly-cloudy-day-2.png');
-let partlyCloudyNight = require('./Images/weather-icons_partly-cloudy-night-2.png');
-let rain = require('./Images/weather-icons_rain-2.png');
-let sleet = require('./Images/weather-icons_sleet-2.png');
-let snow = require('./Images/weather-icons_snow-2.png');
-let thunderstorm = require('./Images/weather-icons_thunderstorm-2.png');
-let wind = require('./Images/weather-icons_wind-2.png');
 let sunriseImg = require('./Images/sunrise.png');
 let sunsetImg = require('./Images/sunset.png');
+let leftArrow = require('./Images/leftArrow.png');
+let rightArrow = require('./Images/rightArrow.png');
 
 class WeatherData extends PureComponent {
 	constructor(props) {
@@ -50,7 +41,8 @@ class WeatherData extends PureComponent {
 		FColor: "#C9C9C9", 
 		CColor: "#606060",
 		showSplashScreen: true,
-      	isMounted: false,
+		isMounted: false,
+		loading:true,
 		// unit: "us", Troubleshooting: remove later
 		}
 		// Set up methods by binding this for them
@@ -68,11 +60,25 @@ class WeatherData extends PureComponent {
 		
 		let tempScale = "F";
 		let weatherData = await getWeatherApi(tempScale);
-		//let weatherDataSI = await getWeatherApiSI();
-		
-		if (weatherData.flags.units == "us") {
-			tempScale = "F";
+
+		let arrayOfIcons = [7];
+		for(let i=0; i< 7; i++)
+		{
+			if(i==0)
+			{
+				arrayOfIcons[0] = await getImageIcon(weatherData.currently.icon);
+			}
+			else
+			{
+				arrayOfIcons[i] = await getImageIcon(weatherData.daily.data[i].icon);
+			}
 		}
+		  this.setState({
+			weatherData: weatherData,
+			tempScale: tempScale,
+			loading: false,
+			icons: arrayOfIcons
+		});
 		
 		this.setState({isMounted: true}, () => {
 			this.state.isMounted &&
@@ -80,14 +86,6 @@ class WeatherData extends PureComponent {
 				this.setState({showSplashScreen: false});
 			  }, 3000);
 		  });
-		
-
-		this.setState({
-			weatherData: weatherData,
-			tempScale: tempScale,
-		});
-
-		
 	}
 
 	componentWillUnmount() {
@@ -125,66 +123,8 @@ class WeatherData extends PureComponent {
 		});
 	}
 
-	findTodayIcon(icon)
-	{
-		let useIcon;
-
-		if(icon == "clear-day")
-		{
-			icon = clearDay;
-		}
-		if(icon == "sleet")
-		{
-			icon = sleet;
-		}
-		if(icon == "thunderstorm")
-		{
-			icon = thunderstorm;
-		}
-		else if(icon == "fog")
-		{
-			icon = fog;
-		}
-		else if(icon == "wind")
-		{
-			icon = wind;
-		}
-		else if(icon == "rain")
-        {
-          useIcon = rain;
-        }
-        else if (icon == "partly-cloudy-day")
-        {
-          useIcon = partlyCloudyDay;
-        }
-        else if (icon == 'snow')
-        {
-          useIcon = snow;
-        }
-        else if (icon == 'clear-night')
-        {
-          useIcon = clearNight;
-        }
-        else if (icon == 'partly-cloudy-night')
-        {
-          useIcon = partlyCloudyNight;
-        }
-        else if (icon == 'cloudy')
-        {
-          useIcon = cloudy;
-		}
-		return useIcon;
-	}
-
-	changeBackground() {
-		return ({
-			backgroundColor: "white"
-		});
-	}
-
   	render() {
-
-		if(this.state.showSplashScreen)
+		if(this.state.showSplashScreen && this.state.loading)
 		{
 			return (
 			<>
@@ -214,7 +154,7 @@ class WeatherData extends PureComponent {
 		let icon;
     if(index === 0)
 		{
-			icon = this.findTodayIcon(this.state.weatherData.currently.icon);
+			icon = this.state.icons[0];
 			averageTemp = Number((this.state.weatherData.currently.temperature).toFixed()) + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[0].temperatureMin).toFixed());
 			highTemp = Number((this.state.weatherData.daily.data[0].temperatureHigh).toFixed()) + " \u00B0" + this.state.tempScale;
@@ -230,7 +170,7 @@ class WeatherData extends PureComponent {
 
 		else
 		{
-			icon = this.findTodayIcon(this.state.weatherData.daily.data[index].icon);
+			icon = this.state.icons[index];
 			averageTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh + this.state.weatherData.daily.data[index].temperatureMin)/2).toFixed() + " \u00B0" + this.state.tempScale;
 			lowTemp = Number((this.state.weatherData.daily.data[index].temperatureMin).toFixed());
 			highTemp = Number((this.state.weatherData.daily.data[index].temperatureHigh).toFixed()) + " \u00B0" + this.state.tempScale;
@@ -261,8 +201,15 @@ class WeatherData extends PureComponent {
 			</View>
 			
 			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column", paddingBottom: 10,}}>
-				<Image source={icon} style={{ height: 100, width: 100, paddingBottom: 0}}/>
-		  		<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
+				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+					<Image style={{height: 70, width: 70, marginRight: 20}} source={leftArrow}></Image>
+					<Image source={icon} style={{ height: 100, width: 100, paddingBottom: 0}}/>
+					<Image style={{height: 70, width: 70, marginLe: 20}} source={rightArrow}></Image>
+				</View>
+					
+					<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
+				
+		  		
 				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
 						<Image source={sunriseImg} style={{ height: 80, width: 80, marginRight: 70}}/>
