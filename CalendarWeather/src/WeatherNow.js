@@ -190,7 +190,7 @@ class WeatherData extends PureComponent {
     
       	return (
 		<View style={{flex: 1, backgroundColor: '#101432', }}>
-			<View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
+			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 20}}>
 				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
 					<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
 				</TouchableOpacity>
@@ -201,19 +201,16 @@ class WeatherData extends PureComponent {
 			</View>
 			
 			<View style={{justifyContent: 'center', alignItems: 'center', flex: 1, flexDirection: "column", paddingBottom: 10,}}>
-				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-					<Image style={{height: 70, width: 70, marginRight: 20}} source={leftArrow}></Image>
-					<Image source={icon} style={{ height: 100, width: 100, paddingBottom: 0}}/>
-					<Image style={{height: 70, width: 70, marginLe: 20}} source={rightArrow}></Image>
-				</View>
-					
-					<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
-				
-		  		
-				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
+				<View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 0}}>
+					<Image style={{height: 50, width: 50, marginRight: 40, marginTop: 45}} source={leftArrow}></Image>
+					<Image source={icon} style={{ height: 100, width: 100,}}/>
+					<Image style={{height: 50, width: 50, marginLeft: 40, marginTop: 45}} source={rightArrow}></Image>
+				</View>	
+				<Text style = {{fontSize: 33, color: "#C9C9C9", }}>{averageTemp}</Text>
+				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 100}}>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
 						<Image source={sunriseImg} style={{ height: 80, width: 80, marginRight: 70}}/>
-		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 20}}>{sunrise}</Text>
+		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 20, marginTop: 20}}>{sunrise}</Text>
 					</View>
 					<View style={{flexDirection: 'column', alignItems: 'center'}}>
 						<Text style={{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{time}</Text>
@@ -221,7 +218,7 @@ class WeatherData extends PureComponent {
 					</View>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
 						<Image source={sunsetImg} style={{ height: 80, width: 80, marginLeft: 70}}/>
-		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90, fontFamily: "Quicksand-Light"}}>{sunset}</Text>
+		  			<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90, marginTop: 20, fontFamily: "Quicksand-Light"}}>{sunset}</Text>
 					</View>
 				</View>
 			</View>
