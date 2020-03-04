@@ -206,7 +206,7 @@ class WeatherData extends PureComponent {
 					<Image source={icon} style={{ height: 100, width: 100,}}/>
 					<Image style={{height: 50, width: 50, marginLeft: 40, marginTop: 45}} source={rightArrow}></Image>
 				</View>	
-				<Text style = {{fontSize: 33, color: "#C9C9C9", }}>{averageTemp}</Text>
+				<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0, fontFamily: "Quicksand-Light"}}>{averageTemp}</Text>
 				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 100}}>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
 						<Image source={sunriseImg} style={{ height: 80, width: 80, marginRight: 70}}/>
