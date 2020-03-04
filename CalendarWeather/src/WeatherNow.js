@@ -243,8 +243,6 @@ class WeatherData extends PureComponent {
 			/>
 			<WeatherIconUnderDates currentSelectedDate = {this.state.selectedDate}></WeatherIconUnderDates>
 			<EventPicker currentSelectedDate = {this.state.selectedDate} tempScale = {this.state.tempScale}></EventPicker>
-			<Text style={{color: '#C9C9C9', fontFamily: "Quicksand-Light"}}
-  	        onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>Powered by Dark Sky</Text>
 			</View>
 		</View>
         );

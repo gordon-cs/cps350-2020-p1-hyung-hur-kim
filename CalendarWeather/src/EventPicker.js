@@ -1,7 +1,7 @@
 //This is an example code for FlatList// 
 import React from 'react';
 //import react in our code. 
-import { StyleSheet, FlatList, Text, View, Alert, Dimensions, Image, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, Linking, Image, TouchableOpacity } from 'react-native';
 //import all the components we are going to use. 
 import RNCalendarEvents from "react-native-calendar-events";
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
@@ -363,14 +363,11 @@ componentDidMount() {
 
           if (item.value == "Powered by Dark Sky") {
             return ( 
-              <View style = {styles.container}>
-                <TouchableOpacity style = {styles.list}>
+              <View style = {styles.darkskyContainer}>
+                <TouchableOpacity onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>
                   <View>
-                    <Text style={styleOfValues.item}>{item.value}</Text>
+                    <Text style = {styles.darkskyattrib}>{item.value}</Text>
                   </View>
-                  <TouchableOpacity style={{flex:1} } onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>
-                    {view}
-                  </TouchableOpacity>
                 </TouchableOpacity>
               </View>
             );
@@ -431,5 +428,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
     marginLeft: 'auto',
+  },
 
-  }});
+  darkskyContainer: {
+    padding: 1,
+    fontSize: 5,
+    color: "#C9C9C9",
+  },
+
+  darkskyattrib: {
+    fontFamily: "Quicksand-Light",
+    padding: 1,
+    fontSize: 13,
+    color: "white",
+  }
+});
