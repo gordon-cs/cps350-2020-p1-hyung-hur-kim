@@ -329,19 +329,19 @@ componentDidMount() {
           let time;
           let location;
           if(item.value == "Powered by Dark Sky") {
-            title = (<Text style = {{ fontSize: 5, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>Powered by Dark Sky</Text>);
+            title = (<Text style = {{ fontSize: 5, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}></Text>);
           }
           else if(item.event[0] != undefined)
           {
-            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>
+            time = (<Text style = {{marginTop: 3, fontSize: 11, color: 'white', flexWrap: 'wrap', fontFamily: "Quicksand-Light"}}>
               {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
             if(item.event[2] != undefined)
             {
-                title = (<Text style = {{color: "white", fontWeight: '600', minHeight: 15, fontSize: 18}}>{item.event[2]}</Text>);
+                title = (<Text style = {{color: "white", fontWeight: '600', minHeight: 15, fontSize: 18, fontFamily: "Quicksand-Light"}}>{item.event[2]}</Text>);
             }
             if(item.event[3] != "")
             {
-              location = (<Text style = {{marginTop: 3, fontSize: 10, fontWeight: 'bold', color: "white", flexWrap: 'wrap'}}>{item.event[3]}</Text>);
+              location = (<Text style = {{marginTop: 3, fontSize: 10, fontFamily: "Quicksand-Light", color: "white", flexWrap: 'wrap'}}>{item.event[3]}</Text>);
             }
 
             view = (
@@ -356,7 +356,7 @@ componentDidMount() {
           else 
           {
             view = (<View  style={{justifyContent: "flex-start", border: 0}}>
-              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9"}}>+</Text>
+              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>+</Text>
             </View>);
           }
 
@@ -384,7 +384,7 @@ componentDidMount() {
               </View>
               <View style={{flex: 1, flexDirection: "row"}}>
                   <Image source={item.icon} style={{height: 50, width: 50}} />
-                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9"}}>{item.temp}</Text>
+                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{item.temp}</Text>
               </View>
               <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
                 {view}

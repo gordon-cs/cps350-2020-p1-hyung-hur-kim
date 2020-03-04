@@ -62,12 +62,13 @@ const styles = StyleSheet.create({
   MainContainer: {
     marginBottom: 5,
     marginTop: 1,
-    justifyContent: 'space-evenly',
+    alignItems: 'center',
 },
 
   item: {
-    marginHorizontal: 8,
+    marginHorizontal: 5.5,
     width: 40,
     height: 40,
+    alignContent: 'space-around'
   },
 });
