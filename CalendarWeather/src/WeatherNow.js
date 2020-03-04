@@ -192,11 +192,11 @@ class WeatherData extends PureComponent {
 		<View style={{flex: 1, backgroundColor: '#101432', }}>
 			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 20}}>
 				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
-					<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10}}>C{" \u00B0"}</Text>
+					<Text style={{color: this.state.CColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
 				</TouchableOpacity>
-				<Text style={{color: "#606060", fontSize: 20}}>/</Text>
+				<Text style={{color: "#606060", fontSize: 20, fontFamily: "Quicksand-Light"}}>/</Text>
 				<TouchableOpacity onPress={()=> this.changeScaleToF()}>
-					<Text style={{color: this.state.FColor, fontSize: 20, marginLeft: 10, marginRight: 10} }>F{" \u00B0"}</Text>
+					<Text style={{color: this.state.FColor, fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"} }>F{" \u00B0"}</Text>
 				</TouchableOpacity>
 			</View>
 			
@@ -213,24 +213,24 @@ class WeatherData extends PureComponent {
 		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 20, marginTop: 20}}>{sunrise}</Text>
 					</View>
 					<View style={{flexDirection: 'column', alignItems: 'center'}}>
-						<Text style={{color: "#C9C9C9",}}>{time}</Text>
-						<Text style = {{color: "#C9C9C9", marginTop: 5}}>{lowTemp} / {highTemp}</Text>
+						<Text style={{color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{time}</Text>
+						<Text style = {{color: "#C9C9C9", marginTop: 5, fontFamily: "Quicksand-Light"}}>{lowTemp} / {highTemp}</Text>
 					</View>
 					<View style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
 						<Image source={sunsetImg} style={{ height: 80, width: 80, marginLeft: 70}}/>
-		  				<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90, marginTop: 20}}>{sunset}</Text>
+		  			<Text style={{fontSize: 10, color: "#C9C9C9", marginLeft: 90, marginTop: 20, fontFamily: "Quicksand-Light"}}>{sunset}</Text>
 					</View>
 				</View>
 			</View>
 			<View style={{flex: 2.5}}>
         	<CalendarStrip
-				style={{ height: 100, paddingBottom: 10}}
-				calendarHeaderStyle={{ color: '#C9C9C9' , marginBottom: 10}}
+				style={{ height: 100, paddingBottom: 10, fontFamily: "Quicksand-Light"}}
+				calendarHeaderStyle={{ color: '#C9C9C9' , marginBottom: 10, fontFamily: "Quicksand-Light"}}
 				calendarColor={"#101432"}
-				dateNumberStyle={{ color: "#606060" }}
-				dateNameStyle={{ color: "#606060"}}
-				highlightDateNumberStyle={{ color: "#C9C9C9" }}
-				highlightDateNameStyle={{ color: "#C9C9C9"}}
+				dateNumberStyle={{ color: "#606060", fontFamily: "Quicksand-Light"}}
+				dateNameStyle={{ color: "#606060", fontFamily: "Quicksand-Light"}}
+				highlightDateNumberStyle={{ color: "#C9C9C9", fontFamily: "Quicksand-Light"}}
+				highlightDateNameStyle={{ color: "#C9C9C9", fontFamily: "Quicksand-Light"}}
 				iconContainer={{ justifyContent: 'space-between'}}
 				useIsoWeekday = {false}
 				startingDate = {new Date()}
