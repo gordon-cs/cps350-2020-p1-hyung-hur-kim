@@ -42,6 +42,7 @@ class WeatherData extends Component {
 		super(props);        // Always do this first, to make props valid
 		this.state = {       // Initialize state (don't call setState in ctor)
 		isLoading: true,
+		latLon: '0,0',
 		tempScale : "F",
 		selectedDate : this.props.currentSelectedDate,
 		// unit: "us", Troubleshooting: remove later
@@ -59,8 +60,17 @@ class WeatherData extends Component {
 	*/
 	async componentDidMount() {
 		let tempScale = "C";
-		let weatherData = await getWeatherApi(tempScale);
-		//let weatherDataSI = await getWeatherApiSI();
+		//let weatherData = await getWeatherApi(tempScale);
+		let devicelocation = await getDeviceLocation(this.locationUpdate);
+		
+		locationUpdate = latLon => {
+			this.setState({latLon});
+			let weatherData = await getWeatherData(tempScale, this.state.latLong);
+			this.setState({
+			  isLoading: false,
+			  weatherData,
+			});
+		  };
 		
 		if (weatherData.flags.units == "us") {
 			tempScale = "F";
@@ -89,6 +99,11 @@ class WeatherData extends Component {
 			weatherData: tempWeatherDate,
 			tempScale: temp
 		});
+	}
+
+	async getLocation()
+	{
+		
 	}
 
 	async changeScaleToC() {
@@ -221,6 +236,9 @@ class WeatherData extends Component {
       	return (
 		<View style={{flex: 1, backgroundColor: '#101432'}}>
 			<View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 10}}>
+				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
+					<Text style={{color: "#C9C9C9", fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>Select Location</Text>
+				</TouchableOpacity>
 				<TouchableOpacity onPress={()=> this.changeScaleToC()}>
 					<Text style={{color: "#C9C9C9", fontSize: 20, marginLeft: 10, marginRight: 10, fontFamily: "Quicksand-Light"}}>C{" \u00B0"}</Text>
 				</TouchableOpacity>

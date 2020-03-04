@@ -17,7 +17,7 @@ export default async function getDeviceLocation(callback) {
       await requestLocationPermission();
     }
     Geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           let latLong = position.coords.latitude + ',' + position.coords.longitude;
           callback(latLong);
         },
