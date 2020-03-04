@@ -16,17 +16,17 @@ RNCalendarEvents.authorizationStatus().then(response => {
   }
 });
 
-let clearDay = require('./weather-icons_clear-day-2.png');
-let clearNight = require('./weather-icons_clear-night-2.png');
-let cloudy = require('./weather-icons_cloudy-2.png');
-let fog = require('./weather-icons_fog-2.png');
-let partlyCloudyDay = require('./weather-icons_partly-cloudy-day-2.png');
-let partlyCloudyNight = require('./weather-icons_partly-cloudy-night-2.png');
-let rain = require('./weather-icons_rain-2.png');
-let sleet = require('./weather-icons_sleet-2.png');
-let snow = require('./weather-icons_snow-2.png');
-let thunderstorm = require('./weather-icons_thunderstorm-2.png');
-let wind = require('./weather-icons_wind-2.png');
+let clearDay = require('./Images/weather-icons_clear-day-2.png');
+let clearNight = require('./Images/weather-icons_clear-night-2.png');
+let cloudy = require('./Images/weather-icons_cloudy-2.png');
+let fog = require('./Images/weather-icons_fog-2.png');
+let partlyCloudyDay = require('./Images/weather-icons_partly-cloudy-day-2.png');
+let partlyCloudyNight = require('./Images/weather-icons_partly-cloudy-night-2.png');
+let rain = require('./Images/weather-icons_rain-2.png');
+let sleet = require('./Images/weather-icons_sleet-2.png');
+let snow = require('./Images/weather-icons_snow-2.png');
+let thunderstorm = require('./Images/weather-icons_thunderstorm-2.png');
+let wind = require('./Images/weather-icons_wind-2.png');
 
 let calendars = [];
   
@@ -71,9 +71,6 @@ export default class EventPicker extends React.Component {
     const darkskyURL = "https://api.darksky.net/forecast";
     const ApiKey = "7711c2819f294564cb912e166a5bb983";
     const latLon = "42.589611,-70.819806";
-
-    try {
-
       let date = moment(this.state.currentSelectedDate).format("YYYY-MM-DD[T]00:00:00");
 
       let response, responseJson;
@@ -92,29 +89,29 @@ export default class EventPicker extends React.Component {
       }
 
       this.setState({futureWeatherData: responseJson});
-
       let list = this.state.FlatListItems;
+
       for(let hour=0; hour<24; hour++)
       {
         let icon = this.state.futureWeatherData.hourly.data[hour].icon;
-        let temperature = Math.round(this.state.futureWeatherData.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
+        let temperature = Math.round(responseJson.hourly.data[hour].temperature) + " \u00B0" + this.state.tempScale;
         let useIcon = clearDay;
 
 		    if(icon == "sleet")
 		    {
-		    	icon = sleet;
+		    	useIcon = sleet;
 		    }
 		    if(icon == "thunderstorm")
 		    {
-		    	icon = thunderstorm;
+		    	useIcon = thunderstorm;
 		    }
 		    else if(icon == "fog")
 		    {
-		    	icon = fog;
+		    	useIcon = fog;
 		    }
 		    else if(icon == "wind")
 		    {
-		    	icon = wind;
+		    	useIcon = wind;
 		    }
 		    else if(icon == "rain")
         {
@@ -153,10 +150,6 @@ export default class EventPicker extends React.Component {
       }
 
       this.setState({FlatListItems: list});
-      
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   FlatListItemSeparator = () => {
@@ -230,13 +223,10 @@ componentDidMount() {
       Alert.alert("Failed to get events");
     }
     let list = this.state.FlatListItems;
-    //console.log(allEvents);
     for(let i=0; i< allEvents.length; i++)
       {
         let startDate = moment(allEvents[i].startDate);
         let hour = new Date(startDate).getHours();
-        console.log(hour);
-        let endDate = moment(allEvents[i].endDate);
         
         if(allEvents[i].allDay)
         {
@@ -304,6 +294,32 @@ componentDidMount() {
         //Item Separator View
         renderItem={({ item}) => 
         {
+
+          let styleOfValues;
+
+          if(item.value.length > 4)
+          {
+            styleOfValues = StyleSheet.create({
+              item: {
+                padding: 10,
+                fontSize: 18,
+                height: 44,
+                color: "#C9C9C9"
+              },
+              });
+          }
+          else
+          {
+            styleOfValues = StyleSheet.create({
+              item: {
+                padding: 10,
+                fontSize: 18,
+                height: 44,
+                color: "#C9C9C9",
+                marginLeft: 10
+              },
+              });
+          }
           let view;
           let withoutEventView;
 
@@ -313,7 +329,7 @@ componentDidMount() {
 
           if(item.event[0] != undefined)
           {
-            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap', fontFamily: "Quicksand-Light"}}>
+            time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>
               {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
             if(item.event[2] != undefined)
             {
@@ -336,7 +352,7 @@ componentDidMount() {
           else 
           {
             view = (<View  style={{justifyContent: "flex-start", border: 0}}>
-              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>+</Text>
+              <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9"}}>+</Text>
             </View>);
           }
           return (          
@@ -344,13 +360,13 @@ componentDidMount() {
             <TouchableOpacity style = {styles.list}>
               <View>
                 <Text
-                  style={styles.item}>
+                  style={styleOfValues.item}>
                   {item.value}
                 </Text>
               </View>
               <View style={{flex: 1, flexDirection: "row"}}>
-                <Image source={item.icon} style={{height: 50, width: 50}} />
-                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9", fontFamily: "Quicksand-Light"}}>{item.temp}</Text>
+                  <Image source={item.icon} style={{height: 50, width: 50}} />
+                <Text style={{padding: 10,fontSize: 15,height: 44, color: "#C9C9C9"}}>{item.temp}</Text>
               </View>
               <TouchableOpacity style={{flex:1} } onPress={()=>this.editOrAddEvent(item.event[4], item.id)}>
                 {view}
@@ -370,12 +386,10 @@ componentDidMount() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //fontFamily: "Quicksand-Light",
     backgroundColor: '#313241',
     padding: 8,
   },
   MainContainer: {
-    fontFamily: "Quicksand-Light",
     justifyContent: 'center',
     flex: 1,
     marginBottom: 10,
@@ -383,18 +397,15 @@ const styles = StyleSheet.create({
   },
   list: {
     flexDirection: 'row',
-    fontFamily: "Quicksand-Light",
   },
   item: {
-    fontFamily: "Quicksand-Light",
     padding: 10,
     fontSize: 18,
     height: 44,
-    color: "#C9C9C9"
+    color: "#C9C9C9",
   },
 
   event: {
-    fontFamily: "Quicksand-Light",
     padding: 10,
     fontSize: 18,
     height: 44,
