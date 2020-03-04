@@ -204,10 +204,10 @@ class WeatherData extends PureComponent {
 				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 					<Image style={{height: 70, width: 70, marginRight: 20}} source={leftArrow}></Image>
 					<Image source={icon} style={{ height: 100, width: 100, paddingBottom: 0}}/>
-					<Image style={{height: 70, width: 70, marginLe: 20}} source={rightArrow}></Image>
+					<Image style={{height: 70, width: 70, marginLeft: 20}} source={rightArrow}></Image>
 				</View>
 					
-					<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0}}>{averageTemp}</Text>
+					<Text style = {{fontSize: 33, color: "#C9C9C9", paddingTop: 0, fontFamily: "Quicksand-Light"}}>{averageTemp}</Text>
 				
 		  		
 				<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
@@ -243,6 +243,8 @@ class WeatherData extends PureComponent {
 			/>
 			<WeatherIconUnderDates currentSelectedDate = {this.state.selectedDate}></WeatherIconUnderDates>
 			<EventPicker currentSelectedDate = {this.state.selectedDate} tempScale = {this.state.tempScale}></EventPicker>
+			<Text style={{color: '#C9C9C9', fontFamily: "Quicksand-Light"}}
+  	        onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>Powered by Dark Sky</Text>
 			</View>
 		</View>
         );

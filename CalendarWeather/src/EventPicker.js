@@ -49,7 +49,7 @@ export default class EventPicker extends React.Component {
       { id: '18', value: '6 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '19', value: '7 PM' , event: [] , icon: "", temp: "", eventID: ""},
       { id: '20', value: '8 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '21', value: '9 PM' , event: [] , icon: "", temp: "", eventID: ""},
       { id: '22', value: '10 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '23', value: '11 PM' , event: [] , icon: "", temp: "", eventID: ""},
-      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""}],
+      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""}, { id: '25', value: 'Powered by Dark Sky' , event: [] , icon: "", temp: "", eventID: ""}],
       allCalendars: [],
       currentSelectedDate: this.props.currentSelectedDate,
       allEvents: [{
@@ -197,7 +197,7 @@ componentDidMount() {
       { id: '18', value: '6 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '19', value: '7 PM' , event: [] , icon: "", temp: "", eventID: ""},
       { id: '20', value: '8 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '21', value: '9 PM' , event: [] , icon: "", temp: "", eventID: ""},
       { id: '22', value: '10 PM' , event: [] , icon: "", temp: "", eventID: ""},{ id: '23', value: '11 PM' , event: [] , icon: "", temp: "", eventID: ""},
-      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""},];
+      { id: '24', value: 'All day' , event: [] , icon: "", temp: "", eventID: ""},  { id: '25', value: 'Powered by Dark Sky' , event: [] , icon: "", temp: "", eventID: ""}];
     this.setState({FlatListItems: newFlatList});
   }
 
@@ -230,7 +230,7 @@ componentDidMount() {
         
         if(allEvents[i].allDay)
         {
-          list[24].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location, allEvents[i].id];
+          list[24].event = [allEvents[i].startDate, allEvents[i].endDate, allEvents[i].title, allEvents[i].location, allEvents[i].id];          
         }
         else
         {
@@ -304,7 +304,8 @@ componentDidMount() {
                 padding: 10,
                 fontSize: 18,
                 height: 44,
-                color: "#C9C9C9"
+                color: "#C9C9C9",
+                fontFamily: "Quicksand-Light"
               },
               });
           }
@@ -316,7 +317,8 @@ componentDidMount() {
                 fontSize: 18,
                 height: 44,
                 color: "#C9C9C9",
-                marginLeft: 10
+                marginLeft: 10,
+                fontFamily: "Quicksand-Light"
               },
               });
           }
@@ -326,8 +328,10 @@ componentDidMount() {
           let title;
           let time;
           let location;
-
-          if(item.event[0] != undefined)
+          if(item.value == "Powered by Dark Sky") {
+            title = (<Text style = {{ fontSize: 5, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>Powered by Dark Sky</Text>);
+          }
+          else if(item.event[0] != undefined)
           {
             time = (<Text style = {{marginTop: 3, fontSize: 11, fontWeight: 'bold', color: 'white', flexWrap: 'wrap'}}>
               {format(new Date(item.event[0]), "h:mm a")} to {format(new Date(item.event[1]), "h:mm a")}</Text>);
@@ -355,7 +359,24 @@ componentDidMount() {
               <Text style={{marginLeft: 50, marginTop: 3, fontSize: 30, color: "#C9C9C9"}}>+</Text>
             </View>);
           }
-          return (          
+
+
+          if (item.value == "Powered by Dark Sky") {
+            return ( 
+              <View style = {styles.container}>
+                <TouchableOpacity style = {styles.list}>
+                  <View>
+                    <Text style={styleOfValues.item}>{item.value}</Text>
+                  </View>
+                  <TouchableOpacity style={{flex:1} } onPress={() => Linking.openURL('https://darksky.net/poweredby/')}>
+                    {view}
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
+            );
+          }
+          else {
+          return ( 
           <View style = {styles.container}>
             <TouchableOpacity style = {styles.list}>
               <View>
@@ -372,16 +393,16 @@ componentDidMount() {
                 {view}
               </TouchableOpacity>
             </TouchableOpacity>
-            
           </View>
-        );}
+        );}}
       }
     keyExtractor={(item, index) => index.toString()}
   />
-
 );
 }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
